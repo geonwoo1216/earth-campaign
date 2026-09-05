@@ -299,6 +299,12 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 #실영상iframe{height:100%;width:auto;aspect-ratio:16/9;max-width:100%;max-height:100%;border:0;border-radius:14px;background:#000}
 .실영상이름{font-size:18px;color:#3b5b73;background:rgba(255,255,255,.92);border-radius:20px;padding:8px 16px;text-align:center;line-height:1.4;flex:none}
 
+.설정줄{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f5fafc;border:2px solid #e3eef2;border-radius:18px;padding:12px 16px;margin-bottom:10px}
+.토글버튼{background:#e9eef2;color:#7b93ad;font-size:18px;border-radius:30px;padding:8px 16px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.토글버튼.골라{background:linear-gradient(180deg,#8ee07a,#4caf50);color:#fff;box-shadow:0 3px 0 #368a3a}
+.코드줄{display:flex;gap:8px}
+.코드힌트{background:#f7fbff;border:2px dashed #cfe6f0;border-radius:14px;padding:10px 12px;font-size:17px;color:#3b5b73;line-height:1.9}
+
 @media (max-width:900px){
   .옆판{width:250px}
   .보기들{grid-template-columns:1fr}
@@ -350,6 +356,7 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
     <div class="윗줄">
       <button class="뒤로" data-화면="화면-인트로">🏠</button>
       <div class="제목줄">🌍 지구 지킴이 놀이터</div>
+      <button class="뒤로" id="설정열기" title="설정">⚙️</button>
       <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
     </div>
     <div class="로비몸">
@@ -680,6 +687,38 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
   </div>
 </div>
 
+<!-- 설정 모달 -->
+<div class="중심말" id="설정모달" style="z-index:75;background:rgba(74,59,82,.45)">
+  <div style="background:#fff;border-radius:30px;max-width:520px;width:94%;padding:26px 24px;text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.25);max-height:86vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="color:#2c5f8a">⚙️ 설정</h2>
+      <button class="뒤로" id="설정닫기" style="width:44px;height:44px">✕</button>
+    </div>
+    <div class="설정줄">
+      <span style="font-size:20px">🎵 산뜻한 배경 노래</span>
+      <button class="토글버튼 골라" id="토글음악">🎵 노래 켜짐</button>
+    </div>
+    <div class="설정줄">
+      <span style="font-size:20px">🔊 효과음</span>
+      <button class="토글버튼 골라" id="토글효과음">🔊 효과음 켜짐</button>
+    </div>
+    <hr style="border:none;border-top:3px dashed #e4ecf0;margin:18px 0">
+    <h3 style="color:#2c5f8a;margin-bottom:8px">💎 보석 코드 입력</h3>
+    <p style="font-size:16px;color:#7b93ad;line-height:1.5;margin-bottom:12px">우리가 배운 환경 낱말을 코드로 입력하면 <b>보석 +30</b>!<br>코드 하나는 한 번만 쓸 수 있어요.</p>
+    <div class="코드줄">
+      <input type="text" id="코드입력" placeholder="예: 탄소중립" maxlength="15" style="flex:1;min-width:0;font-family:inherit;font-size:20px;border:3px solid #dbe6ec;border-radius:16px;padding:10px;text-align:center">
+      <button class="확인버튼" id="코드확인버튼">입력</button>
+    </div>
+    <div id="코드결과" style="font-size:18px;color:#6b8f5f;margin:12px 4px 4px;min-height:26px"></div>
+    <details style="margin-top:8px">
+      <summary style="cursor:pointer;font-size:16px;color:#3e7ca3">🔍 코드 힌트 보기</summary>
+      <div class="코드힌트" style="margin-top:8px">
+        탄소중립 · 지구온난화 · 온실가스 · 이산화탄소 · 블루카본 · CO2 · 산소 · O2 · 탄소발자국 · 환경보호 · 기후변화 · 플라스틱 · 비닐 · 재활용 · 분리배출
+      </div>
+    </details>
+  </div>
+</div>
+
 <script>
 /* =====================================================================
    지구 지킴이 캠페인 — 게임 로직
@@ -694,6 +733,8 @@ var 상태 = {
   보석:0, 소유:{}, 착용:Object.assign({},기본착용),
   퀴즈최고:0, 분리최고:0, 본영상:[],
   닉네임:"",
+  설정:{음악:true,효과음:true},
+  코드쓴:[],
   전시:[]  // {src,cap} 캔버스로 만든 것만
 };
 function 불러오기(){
@@ -710,10 +751,10 @@ function 저장하기(){
 }
 
 /* ---------- 소리 (간단하게) ---------- */
-var 소리끔 = false;
+var 효과음켜짐 = true;
 var 소리ctx = null;
 function 소리(종류){
-  if(소리끔) return;
+  if(!효과음켜짐) return;
   try{
     if(!소리ctx) 소리ctx = new (window.AudioContext||window.webkitAudioContext)();
     var o = 소리ctx.createOscillator(), g = 소리ctx.createGain();
@@ -730,6 +771,105 @@ function 소리(종류){
     o.start(); o.stop(소리ctx.currentTime + dur);
   }catch(e){}
 }
+
+/* ---------- 배경 음악 (산뜻한 멜로디, 파일 없이 연주) ---------- */
+var 음악ctx = null, 음악재생중 = false, 음악노트타이머 = null, 음악인덱스 = 0;
+var 산뜻멜로디 = [523,587,659,784,659,587,523,440, 523,659,784,880,1047,880,784,659, 587,659,587,523,440,494,523,587, 659,784,880,1047,1175,1047,880,784];
+function 음악재생(){
+  if(!(상태 && 상태.설정 && 상태.설정.음악)) return;
+  if(음악재생중) return;
+  try{
+    if(!음악ctx) 음악ctx = new (window.AudioContext||window.webkitAudioContext)();
+    if(음악ctx.state === "suspended") 음악ctx.resume();
+  }catch(e){ return; }
+  음악재생중 = true; 음악인덱스 = 0;
+  음악노트재생();
+}
+function 음악멈춤(){
+  음악재생중 = false;
+  if(음악노트타이머){ clearTimeout(음악노트타이머); 음악노트타이머 = null; }
+}
+function 음악노트재생(){
+  if(!음악재생중 || !음악ctx) return;
+  var f = 산뜻멜로디[음악인덱스 % 산뜻멜로디.length];
+  var t = 음악ctx.currentTime;
+  var o = 음악ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+  var g = 음악ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.045, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+  o.connect(g); g.connect(음악ctx.destination);
+  o.start(t); o.stop(t + 0.33);
+  var o2 = 음악ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = f / 2;
+  var g2 = 음악ctx.createGain();
+  g2.gain.setValueAtTime(0.02, t);
+  g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+  o2.connect(g2); g2.connect(음악ctx.destination);
+  o2.start(t); o2.stop(t + 0.33);
+  음악인덱스++;
+  음악노트타이머 = setTimeout(음악노트재생, 300);
+}
+function 음악원할때(){
+  if(상태 && 상태.설정 && 상태.설정.음악) 음악재생();
+}
+
+/* ---------- 설정 (노래·효과음·보석 코드) ---------- */
+function 설정UI(){
+  var m = 상태.설정.음악, e = 상태.설정.효과음;
+  var b1 = document.getElementById("토글음악"), b2 = document.getElementById("토글효과음");
+  if(b1){ b1.textContent = m ? "🎵 노래 켜짐" : "🎵 노래 꺼짐"; b1.classList.toggle("골라", m); }
+  if(b2){ b2.textContent = e ? "🔊 효과음 켜짐" : "🔊 효과음 꺼짐"; b2.classList.toggle("골라", e); }
+}
+function 설정닫기(){ document.getElementById("설정모달").classList.remove("보여"); }
+document.getElementById("설정열기").addEventListener("click", function(){
+  소리("클릭"); 설정UI();
+  document.getElementById("설정모달").classList.add("보여");
+});
+document.getElementById("토글음악").addEventListener("click", function(){
+  상태.설정.음악 = !상태.설정.음악;
+  저장하기(); 설정UI();
+  if(상태.설정.음악){ 음악재생(); }
+  else { 음악멈춤(); }
+});
+document.getElementById("토글효과음").addEventListener("click", function(){
+  상태.설정.효과음 = !상태.설정.효과음;
+  효과음켜짐 = 상태.설정.효과음;
+  저장하기(); 설정UI();
+  if(효과음켜짐) 소리("정답");
+});
+document.getElementById("설정닫기").addEventListener("click", 설정닫기);
+document.getElementById("설정모달").addEventListener("click", function(e){
+  if(e.target === this) 설정닫기();
+});
+
+/* 보석 코드 (비밀 환경 낱말) */
+var 보석코드목록 = ["탄소중립","지구온난화","온실가스","이산화탄소","블루카본","co2","산소","o2","탄소발자국","환경보호","기후변화","플라스틱","비닐","재활용","분리배출"];
+function 코드정규(s){
+  return String(s||"").toLowerCase().replace(/[\s\-\.·,]/g,"");
+}
+document.getElementById("코드확인버튼").addEventListener("click", function(){
+  var inp = document.getElementById("코드입력");
+  var 말 = document.getElementById("코드결과");
+  var q = 코드정규(inp.value);
+  if(!q){ 말.textContent = "먼저 코드를 입력해 주세요!"; return; }
+  상태.코드쓴 = 상태.코드쓴 || [];
+  var hit = null;
+  for(var i=0;i<보석코드목록.length;i++){
+    if(코드정규(보석코드목록[i]) === q){ hit = 보석코드목록[i]; break; }
+  }
+  if(!hit){ 말.textContent = "❌ 맞는 코드가 아니에요. 아래 힌트(코드 목록)를 확인해 보세요!"; return; }
+  if(상태.코드쓴.indexOf(hit) >= 0){ 말.textContent = "⏳ 이미 사용한 코드예요! 코드는 한 번만 쓸 수 있어요."; return; }
+  상태.코드쓴.push(hit);
+  상태.보석 += 30;
+  저장하기(); 모두보석반영(); 갱신랭킹UI();
+  inp.value = "";
+  말.textContent = "🎉 코드 맞음! 보석 +30을 받았어요!";
+  소리("끝");
+  보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "💎 코드 성공! +30");
+});
+document.getElementById("코드입력").addEventListener("keydown", function(e){
+  if(e.key === "Enter") document.getElementById("코드확인버튼").click();
+});
 
 /* ---------- 아이템 목록 ---------- */
 var 카탈로그 = {
@@ -961,6 +1101,7 @@ function 화면가기(id){
   if(id==="화면-영상") 영상열림();
   if(id==="화면-AI") AI화면열기();
   if(id==="화면-인트로"){ 모두보석반영(); }
+  if(id!=="화면-인트로") 음악원할때();
 }
 document.addEventListener("click", function(e){
   var t = e.target.closest ? e.target.closest("[data-화면]") : null;
@@ -2530,6 +2671,8 @@ document.getElementById("ai입력").addEventListener("keydown", function(e){
 
 /* ---------- 시작 ---------- */
 불러오기();
+if(!상태.설정){ 상태.설정 = {음악:true,효과음:true}; }
+효과음켜짐 = !!상태.설정.효과음;
 시작소유();
 닉네임UI();
 옷탭들그리기();
