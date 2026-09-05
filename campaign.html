@@ -3397,7 +3397,7 @@ function 피하기끝(){
   if(피하기raf) cancelAnimationFrame(피하기raf);
   피하기raf = null;
   상태.피하기최고 = Math.max(상태.피하기최고||0, 피하기점수값);
-  var 보상 = 적용부스트(Math.max(5, Math.round(피하기점수값 / 8)));
+  var 보상 = 적용부스트(Math.max(15, Math.round(피하기점수값 * 0.35) + Math.floor(피하기생존/10000) * 30));
   상태.보석 += 보상;
   저장하기(); 모두보석반영(); 갱신랭킹UI();
   document.getElementById("피하기끝이모지").textContent = 피하기점수값 >= 200 ? "🏆" : "💚";
