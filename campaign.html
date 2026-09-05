@@ -346,6 +346,14 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 .기부액:active{transform:translateY(3px);box-shadow:0 0 0 #3f8f3f}
 .기부정보{font-size:15px;color:#3f7a4f;text-align:center;line-height:1.6;min-height:40px}
 
+.업적그리드{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+.업적카드{border-radius:16px;padding:10px;border:2px solid #e6e6e6;text-align:center;background:#fff;display:flex;flex-direction:column;gap:3px}
+.업적카드.달성{background:#f0fbe8;border-color:#9fd98a}
+.업적카드 .아이콘업{font-size:30px}
+.업적카드 .이름업{font-size:15px;color:#4a3b52}
+.업적카드 .설명업{font-size:12px;color:#8a94a0;line-height:1.35}
+.업적카드 .보상업{font-size:13px;color:#c26b00}
+
 @media (max-width:900px){
   .옆판{width:250px}
   .기부레일{width:100%;flex-direction:row;flex-wrap:wrap;gap:6px 10px;justify-content:center;padding:10px}
@@ -404,6 +412,7 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
     <div class="윗줄">
       <button class="뒤로" data-화면="화면-인트로">🏠</button>
       <div class="제목줄">🌍 지구 지킴이 놀이터</div>
+      <button class="뒤로" id="업적열기" title="업적">🏅</button>
       <button class="뒤로" id="설정열기" title="설정">⚙️</button>
       <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
     </div>
@@ -910,6 +919,18 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
   <div class="큰지구메시지">🌍 지구를 지켜요! 💚</div>
 </div>
 
+<!-- ============ 업적 모달 ============ -->
+<div class="중심말" id="업적모달" style="z-index:76;background:rgba(40,30,60,.45)">
+  <div style="background:#fff;border-radius:30px;max-width:640px;width:94%;padding:24px 22px;text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.28);max-height:88vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2 style="color:#2c5f8a">🏅 업적</h2>
+      <button class="뒤로" id="업적닫기" style="width:44px;height:44px">✕</button>
+    </div>
+    <div id="업적통계" style="font-size:17px;color:#5b7a4a;margin-bottom:12px"></div>
+    <div class="업적그리드" id="업적그리드"></div>
+  </div>
+</div>
+
 <script>
 /* =====================================================================
    지구 지킴이 캠페인 — 게임 로직
@@ -928,6 +949,7 @@ var 상태 = {
   코드쓴:[],
   배경테마:"0", 배경소유:["0"],
   기부수:0, 기부보석:0,
+  피하기최고:0, 뽑기수:0, 업적:{},
   전시:[]  // {src,cap} 캔버스로 만든 것만
 };
 function 불러오기(){
@@ -1292,6 +1314,7 @@ function 갱신랭킹UI(){
   set("최고퀴즈", 상태.퀴즈최고);
   set("최고분리", 상태.분리최고);
   set("모은보석", 상태.보석);
+  업적체크();
 }
 
 /* ---------- 화면 이동 ---------- */
@@ -3197,6 +3220,7 @@ function 프리뽑기실행(){
   var 말 = document.getElementById("뽑기결과");
   if(상태.보석 < 1000){ 말.textContent = "💎 보석이 부족해요. 1,000💎가 필요해요!"; 소리("오답"); return; }
   상태.보석 -= 1000;
+  상태.뽑기수 = (상태.뽑기수 || 0) + 1;
   var 후보 = [];
   for(var c in 카탈로그){
     if(c === "스킨") continue;
@@ -3372,6 +3396,7 @@ function 피하기끝(){
   피하기상태 = "끝";
   if(피하기raf) cancelAnimationFrame(피하기raf);
   피하기raf = null;
+  상태.피하기최고 = Math.max(상태.피하기최고||0, 피하기점수값);
   var 보상 = 적용부스트(Math.max(5, Math.round(피하기점수값 / 8)));
   상태.보석 += 보상;
   저장하기(); 모두보석반영(); 갱신랭킹UI();
@@ -3465,6 +3490,101 @@ document.querySelectorAll("[data-기부]").forEach(function(b){
   });
 });
 기부UI();
+
+/* =====================================================================
+   업적 시스템
+===================================================================== */
+function 소유아이템수(){
+  var n = 0;
+  for(var c in 카탈로그){
+    (카탈로그[c] || []).forEach(function(it){ if(상태.소유[it.id]) n++; });
+  }
+  return n;
+}
+var 업적목록 = [
+  {id:"g10",이름:"첫 나무",설명:"총 10💎 기부하기",아이콘:"🌱",보상:10,조건:function(){ return (상태.기부보석||0) >= 10; }},
+  {id:"g100",이름:"나무 지기",설명:"총 100💎 기부하기",아이콘:"🌳",보상:30,조건:function(){ return (상태.기부보석||0) >= 100; }},
+  {id:"g1000",이름:"숲 지기",설명:"총 1,000💎 기부하기",아이콘:"🌲",보상:150,조건:function(){ return (상태.기부보석||0) >= 1000; }},
+  {id:"g10000",이름:"지구의 후원자",설명:"총 10,000💎 기부하기",아이콘:"🌟",보상:600,조건:function(){ return (상태.기부보석||0) >= 10000; }},
+  {id:"c15",이름:"수집 시작",설명:"아이템 15개 소유",아이콘:"🎒",보상:20,조건:function(){ return 소유아이템수() >= 15; }},
+  {id:"c60",이름:"패셔니스타",설명:"아이템 60개 소유",아이콘:"👗",보상:80,조건:function(){ return 소유아이템수() >= 60; }},
+  {id:"c110",이름:"슈퍼 수집가",설명:"아이템 110개 소유",아이콘:"👑",보상:200,조건:function(){ return 소유아이템수() >= 110; }},
+  {id:"skin2",이름:"스킨 컬렉터",설명:"스킨 2종 모두 소유",아이콘:"🖼️",보상:150,조건:function(){ return 상태.소유["skin1"] && 상태.소유["skin2"]; }},
+  {id:"r1",이름:"분리 첫 걸음",설명:"분리배출 점수 10점",아이콘:"♻️",보상:10,조건:function(){ return (상태.분리최고||0) >= 10; }},
+  {id:"r2",이름:"분리 고수",설명:"분리배출 점수 80점",아이콘:"♻️",보상:50,조건:function(){ return (상태.분리최고||0) >= 80; }},
+  {id:"r3",이름:"분리배출 달인",설명:"분리배출 만점(120점)",아이콘:"🏆",보상:150,조건:function(){ return (상태.분리최고||0) >= 120; }},
+  {id:"q1",이름:"퀴즈 첫 걸음",설명:"퀴즈 점수 10점",아이콘:"🧠",보상:10,조건:function(){ return (상태.퀴즈최고||0) >= 10; }},
+  {id:"q2",이름:"퀴즈 우등생",설명:"퀴즈 점수 90점",아이콘:"🧠",보상:50,조건:function(){ return (상태.퀴즈최고||0) >= 90; }},
+  {id:"q3",이름:"퀴즈 천재",설명:"퀴즈 만점(180점)",아이콘:"🌟",보상:200,조건:function(){ return (상태.퀴즈최고||0) >= 180; }},
+  {id:"d1",이름:"피하기 첫 걸음",설명:"쓰레기 피하기 30점",아이콘:"🌍",보상:10,조건:function(){ return (상태.피하기최고||0) >= 30; }},
+  {id:"d2",이름:"피하기 장인",설명:"쓰레기 피하기 150점",아이콘:"🌍",보상:80,조건:function(){ return (상태.피하기최고||0) >= 150; }},
+  {id:"d3",이름:"피하기 신",설명:"쓰레기 피하기 300점",아이콘:"💫",보상:200,조건:function(){ return (상태.피하기최고||0) >= 300; }},
+  {id:"sun",이름:"해님 발견",설명:"🌞 해님 이스터에그 발견",아이콘:"🌞",보상:20,조건:function(){ return !!상태.태양본; }},
+  {id:"code5",이름:"코드 수집가",설명:"보석 코드 5개 사용",아이콘:"🔑",보상:80,조건:function(){ return (상태.코드쓴||[]).length >= 5; }},
+  {id:"box1",이름:"뽑기 도전",설명:"프리미엄 뽑기 1회",아이콘:"🎁",보상:20,조건:function(){ return (상태.뽑기수||0) >= 1; }},
+  {id:"box10",이름:"뽑기 마니아",설명:"프리미엄 뽑기 10회",아이콘:"🎁",보상:100,조건:function(){ return (상태.뽑기수||0) >= 10; }},
+  {id:"bg3",이름:"배경 감상가",설명:"프리미엄 배경 3개 소유",아이콘:"🌈",보상:120,조건:function(){ return (상태.배경소유||["0"]).length >= 3; }},
+  {id:"bg6",이름:"배경 컬렉터",설명:"프리미엄 배경 전부 소유",아이콘:"🌌",보상:300,조건:function(){ return (상태.배경소유||["0"]).length >= 6; }},
+  {id:"star",이름:"별빛 지킴이",설명:"총점 900점 달성",아이콘:"⭐",보상:100,조건:function(){ return 총점() >= 900; }},
+  {id:"boss",이름:"지구 대장",설명:"총점 3000점 달성",아이콘:"🌍",보상:400,조건:function(){ return 총점() >= 3000; }}
+];
+function 업적달성여부(id){ return !!(상태.업적 && 상태.업적[id]); }
+function 업적체크(){
+  if(!상태.업적) 상태.업적 = {};
+  var 새것 = [], 총보상 = 0;
+  for(var i=0;i<업적목록.length;i++){
+    var u = 업적목록[i];
+    if(업적달성여부(u.id)) continue;
+    var 성공 = false;
+    try{ 성공 = !!u.조건(); }catch(e){}
+    if(성공){
+      상태.업적[u.id] = true;
+      var 보상 = 적용부스트(u.보상||0);
+      상태.보석 += 보상;
+      총보상 += 보상;
+      새것.push(u);
+    }
+  }
+  if(새것.length){
+    저장하기(); 모두보석반영();
+    if(새것.length === 1){
+      보석반짝(window.innerWidth/2, window.innerHeight/2 - 140, "🏅 업적 달성! " + 새것[0].이름 + " 💎+" + 새것[0].보상);
+    } else {
+      var 이름들 = [];
+      for(var k=0;k<Math.min(새것.length,3);k++) 이름들.push(새것[k].이름);
+      보석반짝(window.innerWidth/2, window.innerHeight/2 - 140, "🏅 업적 " + 새것.length + "개 달성! 💎+" + 총보상);
+    }
+    소리("끝");
+  }
+}
+function 업적그리기(){
+  var 그 = document.getElementById("업적그리드");
+  var 통 = document.getElementById("업적통계");
+  if(!그) return;
+  var 완료 = 0;
+  for(var i=0;i<업적목록.length;i++) if(업적달성여부(업적목록[i].id)) 완료++;
+  if(통) 통.textContent = "달성 " + 완료 + " / " + 업적목록.length + " · 달성하면 보석 지급!";
+  그.innerHTML = "";
+  업적목록.forEach(function(u){
+    var done = 업적달성여부(u.id);
+    var 카 = document.createElement("div");
+    카.className = "업적카드" + (done ? " 달성" : "");
+    카.innerHTML = '<div class="아이콘업">' + (done ? "✅" : u.아이콘) + '</div>' +
+      '<div class="이름업">' + u.이름 + '</div>' +
+      '<div class="설명업">' + u.설명 + '</div>' +
+      '<div class="보상업">' + (done ? "달성 완료!" : "💎 +" + u.보상) + '</div>';
+    그.appendChild(카);
+  });
+}
+function 업적열기모달(){
+  소리("클릭");
+  업적그리기();
+  document.getElementById("업적모달").classList.add("보여");
+}
+function 업적닫기모달(){ document.getElementById("업적모달").classList.remove("보여"); }
+document.getElementById("업적열기").addEventListener("click", 업적열기모달);
+document.getElementById("업적닫기").addEventListener("click", 업적닫기모달);
+document.getElementById("업적모달").addEventListener("click", function(e){ if(e.target === this) 업적닫기모달(); });
 
 /* ---------- 시작 ---------- */
 불러오기();
