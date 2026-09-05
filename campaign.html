@@ -1980,7 +1980,7 @@ function 분리정답맞추기(선택, 버튼){
     var 통 = 버튼; 통.classList.add("정답불");
     setTimeout(function(){ 통.classList.remove("정답불"); }, 700);
     var r = 버튼.getBoundingClientRect();
-    보석반짝(r.left + r.width/2, r.top, 어려 ? "👑 어려운 문제! 💎 +16" : "💎 +8");
+    보석반짝(r.left + r.width/2, r.top, 어려 ? "👑 어려운 문제! 💎 +160" : "💎 +80");
   } else {
     분리목숨--;
     소리("오답");
@@ -2004,7 +2004,7 @@ function 분리정답맞추기(선택, 버튼){
 function 분리끝(){
   분리멈춤 = true;
   var 전체수 = 분리순서.length;
-  var 획득 = (분리정답수 - 분리어려움맞음)*8 + 분리어려움맞음*16;
+  var 획득 = (분리정답수 - 분리어려움맞음)*80 + 분리어려움맞음*160;
   var 보상 = 적용부스트(획득);
   상태.보석 += 보상;
   상태.분리최고 = Math.max(상태.분리최고||0, 분리점수값);
@@ -2127,7 +2127,7 @@ function 퀴즈답하기(선택, 버튼){
     해설.textContent = (보스임 ? "👑 보스 격파! 정답! " : "🎉 정답! ") + 문제.해설;
     해설.style.color = "#2e7d32";
     var r = 버튼.getBoundingClientRect();
-    보석반짝(r.left+r.width/2, r.top, 보스임 ? "👑 보스! 💎 +24" : "💎 +12");
+    보석반짝(r.left+r.width/2, r.top, 보스임 ? "👑 보스! 💎 +240" : "💎 +120");
   } else {
     소리("오답");
     해설.textContent = (문제.보스 ? "👑 보스 문제였어요! " : "💡 ") + 문제.해설;
@@ -2144,7 +2144,7 @@ function 퀴즈끝(){
   퀴즈끝남 = true;
   var 전체 = window.퀴즈문제순서.length;
   var 점수 = 퀴즈맞은수*10 + 퀴즈보스맞음*10;
-  var 획득 = 퀴즈맞은수*12 + 퀴즈보스맞음*12;
+  var 획득 = 퀴즈맞은수*120 + 퀴즈보스맞음*120;
   var 보상 = 적용부스트(획득);
   var 새최고 = false;
   if(점수 > (상태.퀴즈최고||0)){ 상태.퀴즈최고 = 점수; 새최고 = true; }
@@ -3397,7 +3397,8 @@ function 피하기끝(){
   if(피하기raf) cancelAnimationFrame(피하기raf);
   피하기raf = null;
   상태.피하기최고 = Math.max(상태.피하기최고||0, 피하기점수값);
-  var 보상 = 적용부스트(Math.max(15, Math.round(피하기점수값 * 0.35) + Math.floor(피하기생존/10000) * 30));
+  var 내부 = Math.max(15, Math.round(피하기점수값 * 0.35) + Math.floor(피하기생존/10000) * 30);
+  var 보상 = 적용부스트(내부 * 10);
   상태.보석 += 보상;
   저장하기(); 모두보석반영(); 갱신랭킹UI();
   document.getElementById("피하기끝이모지").textContent = 피하기점수값 >= 200 ? "🏆" : "💚";
