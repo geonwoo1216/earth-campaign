@@ -333,7 +333,14 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 .피하기조종:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.14)}
 
 .기부카드{flex:none;text-align:center}
-.기부넓은{flex:none;margin-top:12px;padding:12px 16px;text-align:center;max-width:100%}
+.기부레일{width:150px;flex:none;padding:14px 10px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:flex-start}
+.기부레일 .랭킹제목{font-size:18px;justify-content:center}
+.기부레일 .기부액줄{flex-direction:column;align-items:stretch;width:100%;margin-bottom:6px}
+.기부레일 .기부액{font-size:15px;padding:9px 4px;width:100%}
+.나무축하{position:fixed;inset:0;z-index:96;pointer-events:none;overflow:hidden}
+.나무축하 .축하말{position:absolute;top:13%;left:0;right:0;text-align:center;font-size:clamp(26px,6vh,52px);color:#fff;text-shadow:0 4px 14px rgba(0,0,0,.4);animation:둥둥 1.8s ease}
+.떠오름{position:absolute;bottom:-70px;opacity:0;animation:떠오름 2.6s ease-out forwards}
+@keyframes 떠오름{0%{transform:translateY(0) scale(.4);opacity:0}12%{opacity:1}100%{transform:translateY(-112vh) scale(1.15) rotate(18deg);opacity:0}}
 .기부액줄{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px}
 .기부액{background:linear-gradient(180deg,#a5e888,#5cb85c);color:#fff;font-size:16px;padding:8px 12px;border-radius:30px;box-shadow:0 3px 0 #3f8f3f}
 .기부액:active{transform:translateY(3px);box-shadow:0 0 0 #3f8f3f}
@@ -341,6 +348,11 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 
 @media (max-width:900px){
   .옆판{width:250px}
+  .기부레일{width:100%;flex-direction:row;flex-wrap:wrap;gap:6px 10px;justify-content:center;padding:10px}
+  .기부레일 .랭킹제목{width:100%}
+  .기부레일 .기부액줄{flex-direction:row;justify-content:center;flex-wrap:wrap;width:100%}
+  .기부레일 .기부액{width:auto;flex:1 1 92px;font-size:16px}
+  .기부레일 .기부정보{width:100%}
   .보기들{grid-template-columns:1fr}
   .영상몸,.옷몸,.포스터몸,.로비몸{flex-direction:column}
   .영상목록칸{width:100%;flex-direction:row}
@@ -435,19 +447,20 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
             <span class="한줄">궁금한 지구 이야기를 물어보세요!</span>
           </button>
         </div>
-        <div class="기부넓은 로비카드">
-          <div class="랭킹제목">💚 지구에게 기부</div>
-          <p style="font-size:15px;color:#7b93ad;line-height:1.5;margin-bottom:8px">기부하면 나무가 심어져요! 금액을 골라 주세요.</p>
-          <div class="기부액줄">
-            <button class="기부액" data-기부="10">10💎</button>
-            <button class="기부액" data-기부="30">30💎</button>
-            <button class="기부액" data-기부="50">50💎</button>
-            <button class="기부액" data-기부="100">100💎</button>
-            <button class="기부액" data-기부="1000">1000💎</button>
-            <button class="기부액" data-기부="10000">10000💎</button>
-          </div>
-          <div class="기부정보" id="기부정보"></div>
+      </div>
+
+      <div class="기부레일 로비카드">
+        <div class="랭킹제목">💚 지구 기부</div>
+        <p style="font-size:14px;color:#7b93ad;line-height:1.5;margin-bottom:8px">누르면 나무가 심어져요!</p>
+        <div class="기부액줄">
+          <button class="기부액" data-기부="10">10💎</button>
+          <button class="기부액" data-기부="30">30💎</button>
+          <button class="기부액" data-기부="50">50💎</button>
+          <button class="기부액" data-기부="100">100💎</button>
+          <button class="기부액" data-기부="1000">1000💎</button>
+          <button class="기부액" data-기부="10000">10000💎</button>
         </div>
+        <div class="기부정보" id="기부정보"></div>
       </div>
 
       <div class="옆판">
@@ -3400,6 +3413,27 @@ function 기부UI(){
   var 그루 = Math.floor(총 / 30);
   el.textContent = 총 ? ("총 기부 💎 " + 총 + " · 🌳 나무 " + 그루 + "그루") : "아직 기부하지 않았어요. 금액을 눌러 주세요!";
 }
+function 나무축하(말글){
+  var ov = document.createElement("div");
+  ov.className = "나무축하";
+  var m = document.createElement("div");
+  m.className = "축하말";
+  m.textContent = "🌳 위에 나무가 심어졌어요! 💚 " + 말글;
+  ov.appendChild(m);
+  var 이모지들 = ["🌳","🌱","💚","💖","🌸","🌿","🍃","⭐","💧","🌼","🕊️"];
+  for(var i=0;i<16;i++){
+    var s = document.createElement("span");
+    s.className = "떠오름";
+    s.textContent = 이모지들[i % 이모지들.length];
+    s.style.fontSize = (26 + Math.random()*36) + "px";
+    s.style.left = (3 + Math.random()*94) + "%";
+    s.style.animationDelay = (Math.random()*1.1) + "s";
+    s.style.animationDuration = (2.2 + Math.random()*1.3) + "s";
+    ov.appendChild(s);
+  }
+  document.body.appendChild(ov);
+  setTimeout(function(){ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 3600);
+}
 document.querySelectorAll("[data-기부]").forEach(function(b){
   b.addEventListener("click", function(){
     var 액 = Number(b.getAttribute("data-기부"));
@@ -3411,8 +3445,8 @@ document.querySelectorAll("[data-기부]").forEach(function(b){
       var msg;
       if(액 === 10000) msg = "🌟 10,000💎 기부! 지구의 큰 후원자!";
       else if(액 >= 1000) msg = "🌳 1,000💎 기부! 숲이 자라나요!";
-      else msg = "💚 " + 액 + "💎 기부! 나무를 심었어요!";
-      보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, msg);
+      else msg = "💚 " + 액 + "💎 기부!";
+      나무축하(msg);
     } else {
       보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "보석이 부족해요. " + 액 + "💎이 필요해요!");
       소리("오답");
