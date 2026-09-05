@@ -2842,7 +2842,8 @@ setInterval(부스트칩UI, 1000);
 var 꽃기록 = [];
 var 꽃비밀패턴 = {
   기본: [6,7,6,7,1,2,3,4,5],
-  프리미엄: [9,8,7,6,5,4,3,2,1,6,7]
+  프리미엄: [9,8,7,6,5,4,3,2,1,6,7],
+  해제: [1,2,3,4,5,6,7]
 };
 function 꽃눌림(i){
   꽃기록.push(i);
@@ -2861,6 +2862,7 @@ function 꽃눌림(i){
   }
   if(key === "기본"){ 꽃기록 = []; 비밀모달열기(); }
   else if(key === "프리미엄"){ 꽃기록 = []; 프리미엄모달열기(); }
+  else if(key === "해제"){ 꽃기록 = []; 관리자해제(); }
 }
 document.querySelectorAll("#인트로꽃 span").forEach(function(sp){
   sp.addEventListener("click", function(){ 꽃눌림(Number(sp.getAttribute("data-꽃"))); });
@@ -2899,6 +2901,7 @@ function 관리자실행(){
   var 말 = document.getElementById("관리자결과");
   if(v === "GM1ADMIN"){
     상태.GM = true;
+    상태.이전보석 = 상태.보석;
     상태.보석 = 999999999;
     for(var c in 카탈로그){
       (카탈로그[c]||[]).forEach(function(it){ 상태.소유[it.id] = true; });
@@ -2920,6 +2923,19 @@ function 관리자실행(){
 }
 document.getElementById("비밀코드입력").addEventListener("keydown", function(e){ if(e.key==="Enter") 관리자실행(); });
 document.getElementById("코드관리자").addEventListener("click", 관리자실행);
+function 관리자해제(){
+  if(!상태.GM){
+    보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "관리자 모드가 아니에요!");
+    소리("오답");
+    return;
+  }
+  상태.GM = false;
+  상태.보석 = (typeof 상태.이전보석 === "number") ? 상태.이전보석 : 0;
+  상태.이전보석 = undefined;
+  저장하기(); 모두보석반영(); 갱신랭킹UI();
+  소리("보석");
+  보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "🔓 관리자 모드를 해제했어요!");
+}
 function 스킨구매하기(){
   var 말 = document.getElementById("스킨결과");
   var 아이템 = 아이템정보("스킨", "skin1");
