@@ -312,6 +312,13 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 .부스트칩{background:#fff8e8;border:2px solid #ffe9a8;color:#8a6a30;border-radius:30px;padding:6px 14px;font-size:16px;margin:2px 0 8px;box-shadow:0 3px 0 rgba(0,0,0,.06)}
 .부스트칩.활성{background:#eafff0;border-color:#9be07c;color:#2e7d32}
 
+.배경그리드{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.배경타일{border-radius:16px;overflow:hidden;border:3px solid #e8dcf5;box-shadow:0 3px 8px rgba(0,0,0,.08);cursor:pointer;background:#fff}
+.배경타일:active{transform:scale(.97)}
+.배경타일 .샘플{height:60px}
+.배경타일 .이름{font-size:14px;padding:6px 4px;text-align:center;color:#5b4a6e;line-height:1.3}
+.배경타일.골라{border-color:#8e44ad;box-shadow:0 0 0 2px #d9a7ff inset}
+
 @media (max-width:900px){
   .옆판{width:250px}
   .보기들{grid-template-columns:1fr}
@@ -771,6 +778,32 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
   </div>
 </div>
 
+<!-- ============ 프리미엄 비밀 창 (배경 + 뽑기) ============ -->
+<div class="중심말" id="프리미엄모달" style="z-index:82;background:rgba(30,20,50,.55)">
+  <div style="background:#fff;border-radius:30px;max-width:580px;width:94%;padding:26px 24px;text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h2 style="color:#8e44ad">💎 프리미엄 비밀 창</h2>
+      <button class="뒤로" id="프리닫기" style="width:44px;height:44px">✕</button>
+    </div>
+    <p style="font-size:17px;color:#8a6ba8;line-height:1.6;margin-bottom:14px">✨ 특별한 꽃 코드를 맞췄어요!<br>프리미엄 비밀번호(4자리)를 입력하세요.</p>
+    <div class="코드줄">
+      <input type="text" id="프리패스입력" placeholder="비밀번호 4자리" maxlength="8" style="flex:1;min-width:0;font-family:inherit;font-size:22px;text-align:center;border:3px solid #d9c4f2;border-radius:16px;padding:10px;letter-spacing:6px">
+      <button class="확인버튼" id="프리패스확인">확인</button>
+    </div>
+    <div id="프리결과" style="font-size:18px;margin:12px 4px 4px;min-height:24px"></div>
+    <div id="프리단계2" style="display:none;margin-top:6px">
+      <hr style="border:none;border-top:3px dashed #eadcfa;margin:16px 0">
+      <h3 style="color:#8e44ad;margin-bottom:10px">🌈 프리미엄 배경</h3>
+      <div class="배경그리드" id="배경그리드"></div>
+      <hr style="border:none;border-top:3px dashed #eadcfa;margin:18px 0">
+      <h3 style="color:#8e44ad;margin-bottom:4px">🎁 프리미엄 뽑기 상자</h3>
+      <p style="font-size:15px;color:#8a6ba8;margin-bottom:10px">1,000💎로 한 번 뽑아요! 희귀 장신구·프리미엄 배경·큰 보석 잭팟 중 하나!</p>
+      <button class="둥근버튼" id="프리뽑기" style="background:linear-gradient(180deg,#d9a7ff,#8e44ad);color:#fff;font-size:22px;padding:12px 26px;box-shadow:0 5px 0 #6d2f8c">🎁 뽑기 (1,000💎)</button>
+      <div id="뽑기결과" style="font-size:18px;margin:14px 4px 4px;min-height:24px;line-height:1.6"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* =====================================================================
    지구 지킴이 캠페인 — 게임 로직
@@ -787,6 +820,7 @@ var 상태 = {
   닉네임:"",
   설정:{음악:true,효과음:true},
   코드쓴:[],
+  배경테마:"0", 배경소유:["0"],
   전시:[]  // {src,cap} 캔버스로 만든 것만
 };
 function 불러오기(){
@@ -2805,18 +2839,28 @@ setInterval(부스트칩UI, 1000);
 /* =====================================================================
    인트로 꽃 비밀 + 관리자 + 스킨 상점
 ===================================================================== */
-var 꽃순서 = [6,7,6,7,1,2,3,4,5], 꽃위치 = 0;
+var 꽃기록 = [];
+var 꽃비밀패턴 = {
+  기본: [6,7,6,7,1,2,3,4,5],
+  프리미엄: [9,8,7,6,5,4,3,2,1,6,7]
+};
 function 꽃눌림(i){
-  if(꽃순서[꽃위치] === i){
-    꽃위치++;
-    소리("클릭");
-    if(꽃위치 >= 꽃순서.length){
-      꽃위치 = 0;
-      비밀모달열기();
+  꽃기록.push(i);
+  if(꽃기록.length > 11) 꽃기록.shift();
+  소리("클릭");
+  var key = null;
+  for(var k in 꽃비밀패턴){
+    var p = 꽃비밀패턴[k];
+    if(꽃기록.length >= p.length){
+      var ok = true;
+      for(var j=0;j<p.length;j++){
+        if(꽃기록[꽃기록.length - p.length + j] !== p[j]){ ok = false; break; }
+      }
+      if(ok){ key = k; break; }
     }
-  } else {
-    꽃위치 = (꽃순서[0] === i) ? 1 : 0;
   }
+  if(key === "기본"){ 꽃기록 = []; 비밀모달열기(); }
+  else if(key === "프리미엄"){ 꽃기록 = []; 프리미엄모달열기(); }
 }
 document.querySelectorAll("#인트로꽃 span").forEach(function(sp){
   sp.addEventListener("click", function(){ 꽃눌림(Number(sp.getAttribute("data-꽃"))); });
@@ -2903,10 +2947,139 @@ function 스킨구매하기(){
 }
 document.getElementById("스킨구매").addEventListener("click", 스킨구매하기);
 
+/* =====================================================================
+   프리미엄 배경 + 프리미엄 뽑기
+===================================================================== */
+var 프리미엄배경들 = [
+  {id:"0",이름:"기본 하늘",가격:0,bg:""},
+  {id:"1",이름:"별빛 밤",가격:5000,bg:"radial-gradient(1200px 800px at 15% 10%, #2b3a8c 0%, #141b45 55%, #060918 100%)"},
+  {id:"2",이름:"무지개",가격:5000,bg:"linear-gradient(180deg,#ff9eb5 0%,#ffd6a5 22%,#fdf8b0 42%,#b5f0a0 62%,#93e6ff 82%,#bdb2ff 100%)"},
+  {id:"3",이름:"노을 바다",가격:5000,bg:"linear-gradient(180deg,#ffd38f 0%,#ff9d76 40%,#3e6b9e 72%,#1d3a5f 100%)"},
+  {id:"4",이름:"라벤더 숲",가격:6000,bg:"linear-gradient(180deg,#efe3ff 0%,#cdb0f0 45%,#8a68c4 100%)"},
+  {id:"5",이름:"한밤 바다",가격:6000,bg:"linear-gradient(180deg,#123a5c 0%,#0a2240 55%,#021022 100%)"}
+];
+function 배경정보(id){
+  for(var i=0;i<프리미엄배경들.length;i++) if(프리미엄배경들[i].id === String(id)) return 프리미엄배경들[i];
+  return 프리미엄배경들[0];
+}
+function 배경소유여부(id){ return (상태.배경소유 || ["0"]).indexOf(String(id)) >= 0; }
+function 적용테마(){
+  var info = 배경정보(상태.배경테마 || "0");
+  if(info && info.bg) document.body.style.background = info.bg;
+  else document.body.style.background = "";
+}
+function 프리미엄모달열기(){
+  document.getElementById("프리패스입력").value = "";
+  document.getElementById("프리결과").textContent = "";
+  document.getElementById("뽑기결과").textContent = "";
+  document.getElementById("프리단계2").style.display = "none";
+  document.getElementById("프리미엄모달").classList.add("보여");
+}
+function 프리미엄닫기(){ document.getElementById("프리미엄모달").classList.remove("보여"); }
+document.getElementById("프리닫기").addEventListener("click", 프리미엄닫기);
+document.getElementById("프리미엄모달").addEventListener("click", function(e){ if(e.target === this) 프리미엄닫기(); });
+document.getElementById("프리패스입력").addEventListener("keydown", function(e){ if(e.key === "Enter") document.getElementById("프리패스확인").click(); });
+document.getElementById("프리패스확인").addEventListener("click", function(){
+  var v = document.getElementById("프리패스입력").value.replace(/\s+/g,"");
+  var 말 = document.getElementById("프리결과");
+  if(v === "7676"){
+    말.textContent = "✅ 프리미엄 비밀번호가 맞아요!";
+    말.style.color = "#8e44ad";
+    document.getElementById("프리단계2").style.display = "block";
+    프리미엄배경그리기();
+    소리("보석");
+  } else {
+    말.textContent = "❌ 비밀번호가 틀렸어요.";
+    말.style.color = "#c62828";
+    소리("오답");
+  }
+});
+function 프리미엄배경그리기(){
+  var 그 = document.getElementById("배경그리드");
+  if(!그) return;
+  그.innerHTML = "";
+  프리미엄배경들.forEach(function(배){
+    var t = document.createElement("button");
+    t.className = "배경타일" + (String(상태.배경테마) === 배.id ? " 골라" : "");
+    t.setAttribute("data-배경", 배.id);
+    var 샘플 = 배.bg || "linear-gradient(180deg,#7ed8ff,#fff8d8)";
+    var 라벨;
+    if(String(상태.배경테마) === 배.id) 라벨 = "✔ 적용 중";
+    else if(배경소유여부(배.id)) 라벨 = "👆 적용하기";
+    else 라벨 = "💎 " + 배.가격;
+    t.innerHTML = '<div class="샘플" style="background:'+샘플+'"></div><div class="이름">'+배.이름+'<br><b>'+라벨+'</b></div>';
+    그.appendChild(t);
+  });
+}
+document.getElementById("배경그리드").addEventListener("click", function(e){
+  var t = e.target.closest(".배경타일");
+  if(!t) return;
+  var id = t.getAttribute("data-배경");
+  if(배경소유여부(id)){
+    상태.배경테마 = id;
+    저장하기(); 적용테마(); 프리미엄배경그리기();
+    소리("정답");
+    보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "🌈 배경 적용!");
+  } else {
+    var 배 = 배경정보(id);
+    if(상태.보석 >= 배.가격){
+      상태.보석 -= 배.가격;
+      상태.배경소유.push(id);
+      상태.배경테마 = id;
+      저장하기(); 모두보석반영(); 갱신랭킹UI(); 적용테마(); 프리미엄배경그리기();
+      소리("끝");
+      보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "🌈 " + 배.이름 + " 구매!");
+    } else {
+      보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "보석이 부족해요!");
+      소리("오답");
+    }
+  }
+});
+function 프리뽑기실행(){
+  var 말 = document.getElementById("뽑기결과");
+  if(상태.보석 < 1000){ 말.textContent = "💎 보석이 부족해요. 1,000💎가 필요해요!"; 소리("오답"); return; }
+  상태.보석 -= 1000;
+  var 후보 = [];
+  for(var c in 카탈로그){
+    if(c === "스킨") continue;
+    (카탈로그[c] || []).forEach(function(it){
+      if((it.가격 || 0) >= 25 && !상태.소유[it.id]) 후보.push({카테고리:c, 아이템:it});
+    });
+  }
+  var 미소유배경 = 프리미엄배경들.filter(function(배){ return 배.id !== "0" && !배경소유여부(배.id); });
+  var r = Math.random(), txt = "";
+  if(r < 0.32 && 후보.length){
+    var pick = 후보[Math.floor(Math.random() * 후보.length)];
+    상태.소유[pick.아이템.id] = true;
+    txt = "🎉 희귀 아이템 당첨! [" + (카테고리이름[pick.카테고리] || pick.카테고리) + "] " + pick.아이템.이름 + "!";
+  } else if(r < 0.52 && 미소유배경.length){
+    var th = 미소유배경[Math.floor(Math.random() * 미소유배경.length)];
+    상태.배경소유.push(th.id);
+    상태.배경테마 = th.id;
+    적용테마();
+    txt = "🌈 프리미엄 배경 당첨: " + th.이름 + "! 지금 바로 적용했어요!";
+  } else {
+    var amounts = [300, 800, 2000, 5000, 15000];
+    var amount = amounts[Math.floor(Math.random() * amounts.length)];
+    if(Math.random() < 0.03) amount = 30000;
+    var 보상 = 적용부스트(amount);
+    상태.보석 += 보상;
+    txt = "💎 보석 잭팟! +" + 보상 + "!" + (부스트활성() ? " (⚡2배)" : "");
+  }
+  저장하기(); 모두보석반영(); 갱신랭킹UI();
+  if(document.getElementById("프리단계2").style.display === "block") 프리미엄배경그리기();
+  말.textContent = txt;
+  소리("끝");
+  보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "🎁 " + txt.slice(0, 18));
+}
+document.getElementById("프리뽑기").addEventListener("click", 프리뽑기실행);
+
 /* ---------- 시작 ---------- */
 불러오기();
 if(!상태.설정){ 상태.설정 = {음악:true,효과음:true}; }
+if(!상태.배경소유){ 상태.배경소유 = ["0"]; 상태.배경테마 = "0"; }
 효과음켜짐 = !!상태.설정.효과음;
+적용테마();
 시작소유();
 닉네임UI();
 옷탭들그리기();
