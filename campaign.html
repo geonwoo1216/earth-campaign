@@ -333,6 +333,7 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 .피하기조종:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.14)}
 
 .기부카드{flex:none;text-align:center}
+.기부넓은{flex:none;margin-top:12px;padding:12px 16px;text-align:center;max-width:100%}
 .기부액줄{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px}
 .기부액{background:linear-gradient(180deg,#a5e888,#5cb85c);color:#fff;font-size:16px;padding:8px 12px;border-radius:30px;box-shadow:0 3px 0 #3f8f3f}
 .기부액:active{transform:translateY(3px);box-shadow:0 0 0 #3f8f3f}
@@ -434,6 +435,19 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
             <span class="한줄">궁금한 지구 이야기를 물어보세요!</span>
           </button>
         </div>
+        <div class="기부넓은 로비카드">
+          <div class="랭킹제목">💚 지구에게 기부</div>
+          <p style="font-size:15px;color:#7b93ad;line-height:1.5;margin-bottom:8px">기부하면 나무가 심어져요! 금액을 골라 주세요.</p>
+          <div class="기부액줄">
+            <button class="기부액" data-기부="10">10💎</button>
+            <button class="기부액" data-기부="30">30💎</button>
+            <button class="기부액" data-기부="50">50💎</button>
+            <button class="기부액" data-기부="100">100💎</button>
+            <button class="기부액" data-기부="1000">1000💎</button>
+            <button class="기부액" data-기부="10000">10000💎</button>
+          </div>
+          <div class="기부정보" id="기부정보"></div>
+        </div>
       </div>
 
       <div class="옆판">
@@ -464,19 +478,6 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
             <div class="칸"><div class="v" id="모은보석">0</div><div class="t">💎 모은 보석</div></div>
           </div>
           <div class="등급작은말">놀면서 기록이 쌓이면 등급이 올라가요!</div>
-        </div>
-        <div class="랭킹판 로비카드 기부카드">
-          <div class="랭킹제목">💚 지구에게 기부</div>
-          <p style="font-size:15px;color:#7b93ad;line-height:1.5;margin-bottom:8px">기부하면 나무가 심어져요! 금액을 골라 주세요.</p>
-          <div class="기부액줄">
-            <button class="기부액" data-기부="10">10💎</button>
-            <button class="기부액" data-기부="30">30💎</button>
-            <button class="기부액" data-기부="50">50💎</button>
-            <button class="기부액" data-기부="100">100💎</button>
-            <button class="기부액" data-기부="1000">1000💎</button>
-            <button class="기부액" data-기부="10000">10000💎</button>
-          </div>
-          <div class="기부정보" id="기부정보"></div>
         </div>
       </div>
     </div>
