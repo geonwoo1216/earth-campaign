@@ -96,10 +96,11 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 .g영상{background:linear-gradient(160deg,#ffcf6b,#ff8c42)}
 
 .옆판{width:340px;flex:none;display:flex;flex-direction:column;gap:12px;min-height:0}
-.캐릭터판{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:0;overflow:hidden}
+.캐릭터판{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-height:0;overflow-y:auto;padding-bottom:6px}
 .캐릭터판 .랜덤땅{font-size:24px;line-height:1;margin-top:-18px}
-.캐릭터판 .말풍선아바타{position:static;margin:12px 14px 2px;font-size:15px;color:#7a5a3a;background:#fff8e8;border:2px solid #ffe6b0;border-radius:18px;padding:8px 12px;text-align:center;line-height:1.35;flex:none}
-#아바타-로비{width:auto;height:clamp(120px,24vh,210px);margin:2px auto;filter:drop-shadow(0 6px 12px rgba(0,0,0,.14))}
+.캐릭터판 .말풍선아바타{position:static;margin:12px 14px 2px;font-size:15px;color:#7a5a3a;background:#fff8e8;border:2px solid #ffe6b0;border-radius:18px;padding:8px 12px;text-align:center;line-height:1.35;flex:none;cursor:pointer;transition:transform .15s}
+.캐릭터판 .말풍선아바타:active{transform:scale(.96)}
+#아바타-로비{width:auto;height:clamp(96px,20vh,190px);margin:4px auto;flex:none;filter:drop-shadow(0 6px 12px rgba(0,0,0,.14))}
 #아바타-로비,#아바타-큰{display:flex;align-items:center;justify-content:center}
 #아바타-로비 svg,#아바타-큰 svg{height:100%;width:auto;max-width:100%;display:block}
 .꾸미기버튼{width:calc(100% - 24px);margin:0 12px 12px;background:linear-gradient(180deg,#b39ddb,#8c6fd6);color:#fff;font-size:22px;border-radius:22px;padding:11px 0;box-shadow:0 5px 0 #6f56b8,0 10px 18px rgba(140,111,214,.3);flex:none}
@@ -1183,11 +1184,18 @@ document.addEventListener("click", function(e){
     return;
   }
 });
+var 인사말들 = ["안녕! 나랑 놀자~ 🌱","오늘도 지구를 지켜요! 💚","보석 모아 나를 꾸며줘! 💎","나는 지구 지킴이 친구야! 🌍","오늘 분리배출 했어? ♻️","블루카본을 아는 멋진 친구! 🌊","해님 눌러서 비밀 찾아봐! 🌞","전기 아끼는 지구 지킴이! 💡","너의 별명 뭐야? 🐣","함께하면 지구가 웃어! 😊","오늘 텀블러 챙겼어? 🥤","지구야 고마워~ 💙"];
+var 인사순서 = -1;
 function 아바타인사바꾸기(){
-  var 인사 = ["안녕! 나랑 놀자~ 🌱","오늘도 지구를 지켜요! 💚","보석 모아 나를 꾸며줘! 💎","나는 지구 지킴이 친구야! 🌍"];
   var el = document.getElementById("아바타인사");
-  if(el) el.textContent = 인사[Math.floor(Math.random()*인사.length)];
+  if(!el) return;
+  인사순서 = (인사순서 + 1) % 인사말들.length;
+  el.textContent = 인사말들[인사순서];
+  if(el.animate){
+    try{ el.animate([{transform:"scale(1)"},{transform:"scale(1.07)"},{transform:"scale(1)"}], {duration:260}); }catch(e){}
+  }
 }
+document.getElementById("아바타인사").addEventListener("click", function(){ 소리("클릭"); 아바타인사바꾸기(); });
 
 /* 시작 / 소개 */
 document.getElementById("시작버튼").addEventListener("click", function(){ 소리("클릭"); 화면가기("화면-로비"); });
