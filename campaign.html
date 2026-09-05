@@ -1,0 +1,2414 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌍 지구 지킴이 캠페인</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{
+  --분홍:#ff9ec7; --연분홍:#ffd3e4; --보라:#b39ddb; --파랑:#6ec6ff;
+  --하늘:#8fd3ff; --초록:#9be07c; --연초록:#d5f6c9; --노랑:#ffe082;
+  --주황:#ffb86b; --본문:#4a3b52; --카드:#ffffff; --테두리:rgba(255,255,255,.75);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:"Jua","맑은 고딕","Malgun Gothic",sans-serif;
+  color:var(--본문);overflow:hidden;user-select:none;
+  background:linear-gradient(180deg,#7ed8ff 0%,#aeeaff 34%,#e6fbff 62%,#fff8d8 100%);
+}
+img{-webkit-user-drag:none}
+
+/* ---------- 하늘 장식 (전체 배경 위에 고정) ---------- */
+#하늘{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#하늘 .해{position:absolute;top:26px;right:44px;font-size:74px;filter:drop-shadow(0 4px 10px rgba(255,180,0,.45));animation:해돌 26s linear infinite}
+.해글로벌{position:fixed;top:24px;right:112px;font-size:60px;z-index:60;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 4px 10px rgba(255,180,0,.45));animation:해돌 26s linear infinite;transition:transform .2s}
+.해글로벌:hover{transform:scale(1.14) rotate(10deg)}
+@keyframes 해돌{to{transform:rotate(360deg)}}
+.구름{position:absolute;font-size:52px;opacity:.95;animation:구름이동 linear infinite}
+.구름.a{top:9%;left:-90px;animation-duration:46s}
+.구름.b{top:23%;left:-150px;animation-duration:60s;font-size:38px}
+.구름.c{top:6%;left:-120px;animation-duration:72s;font-size:64px}
+@keyframes 구름이동{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 300px))}}
+#하늘 .언덕{position:absolute;left:-6%;bottom:-120px;width:56%;height:340px;background:radial-gradient(120% 120% at 50% 8%,#bfef9b 0%,#9adf76 70%);border-radius:50% 50% 0 0}
+#하늘 .언덕.우{left:auto;right:-6%;background:radial-gradient(120% 120% at 50% 8%,#d7f7b0 0%,#b7eca1 70%)}
+.꽃장식{position:absolute;bottom:6px;font-size:26px}
+.심장{position:absolute;font-size:26px;opacity:.6;animation:둥둥 3.6s ease-in-out infinite}
+@keyframes 둥둥{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* ---------- 화면 공통 ---------- */
+.화면{position:fixed;inset:0;z-index:1;display:none;overflow:hidden}
+.화면.켜짐{display:flex;flex-direction:column}
+.안쪽{position:relative;width:100%;max-width:1180px;margin:0 auto;height:100%;display:flex;flex-direction:column;padding:0 18px}
+
+/* ---------- 버튼 공통 ---------- */
+button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
+.둥근버튼{
+  background:#fff;border-radius:22px;padding:10px 18px;font-size:20px;
+  box-shadow:0 5px 0 rgba(0,0,0,.08),0 10px 22px rgba(74,59,82,.10);
+  transition:transform .08s;
+}
+.둥근버튼:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.큰버튼{background:linear-gradient(180deg,#ffe28a,#ffb642);border-radius:26px;font-size:30px;color:#6b3a00;padding:16px 44px;box-shadow:0 7px 0 #e0950f,0 16px 30px rgba(255,150,0,.35)}
+.큰버튼:active{transform:translateY(6px);box-shadow:0 1px 0 #e0950f}
+
+/* ---------- 위쪽 줄 (뒤로가기·제목·보석) ---------- */
+.윗줄{display:flex;align-items:center;gap:12px;padding:16px 0 10px}
+.뒤로{width:52px;height:52px;border-radius:50%;background:#fff;font-size:30px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.10);display:grid;place-items:center;flex:none}
+.제목줄{flex:1;font-size:30px;color:#2c5f8a;text-shadow:0 2px 0 #fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.보석알{display:flex;align-items:center;gap:8px;background:#fff;border:3px solid #ffe082;border-radius:40px;padding:7px 16px 7px 8px;box-shadow:0 4px 12px rgba(0,0,0,.10);font-size:23px;color:#c26b00;flex:none}
+.보석알 .다이아{font-size:26px}
+.하단마진{height:10px;flex:none}
+
+/* ---------- 인트로 ---------- */
+#화면-인트로{align-items:center;justify-content:center;text-align:center}
+.타이틀존{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;padding-bottom:20px}
+.지구이모지{font-size:clamp(90px,20vh,150px);filter:drop-shadow(0 8px 14px rgba(0,120,180,.25));animation:둥둥 3s ease-in-out infinite}
+.제목글{font-size:clamp(44px,8.5vh,74px);color:#1f6fae;text-shadow:0 3px 0 #fff,0 8px 20px rgba(0,120,180,.18)}
+.부제{font-size:clamp(18px,3vh,24px);color:#3e7ca3;background:rgba(255,255,255,.65);padding:6px 18px;border-radius:40px}
+.인트로버튼존{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.작은글{font-size:17px;color:#6a97b4;background:rgba(255,255,255,.55);border-radius:14px;padding:4px 12px}
+.보석알.인트로{position:absolute;top:16px;right:16px;z-index:3}
+
+/* ---------- 로비 ---------- */
+.로비몸{flex:1;display:flex;gap:16px;min-height:0;padding-bottom:12px}
+.주무대{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.좌측제목{font-size:clamp(26px,4.6vh,38px);color:#2c5f8a;text-shadow:0 2px 0 #fff}
+.로비카드{background:rgba(255,255,255,.90);border-radius:28px;box-shadow:0 6px 0 rgba(0,0,0,.04),0 14px 30px rgba(74,59,82,.10);border:3px solid var(--테두리)}
+.기능그리드{flex:1;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;min-height:0}
+.기능{
+  position:relative;border-radius:26px;color:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;padding:12px;text-align:center;
+  box-shadow:0 6px 0 rgba(0,0,0,.10),inset 0 -12px 20px rgba(255,255,255,.16);
+  transition:transform .1s;overflow:hidden;
+}
+.기능:active{transform:scale(.97)}
+.기능 .아이콘{font-size:clamp(48px,8vh,76px);filter:drop-shadow(0 4px 6px rgba(0,0,0,.18))}
+.기능 .이름{font-size:clamp(22px,3.6vh,30px);text-shadow:0 2px 3px rgba(0,0,0,.22)}
+.기능 .한줄{font-size:clamp(14px,2.3vh,18px);opacity:.95;text-shadow:0 1px 2px rgba(0,0,0,.20);line-height:1.35;padding:0 6px}
+.기능 .보상{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.9);border-radius:30px;padding:3px 10px;font-size:15px;color:#c26b00;display:flex;gap:5px;align-items:center}
+.기능 .보상.숨김{display:none}
+.g분리{background:linear-gradient(160deg,#5fc7f5,#2f9be0)}
+.g포스터{background:linear-gradient(160deg,#ffb3d1,#f76fb0)}
+.g퀴즈{background:linear-gradient(160deg,#a8e063,#56ab2f)}
+.g영상{background:linear-gradient(160deg,#ffcf6b,#ff8c42)}
+
+.옆판{width:340px;flex:none;display:flex;flex-direction:column;gap:12px;min-height:0}
+.캐릭터판{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:0;overflow:hidden}
+.캐릭터판 .랜덤땅{font-size:24px;line-height:1;margin-top:-18px}
+.캐릭터판 .말풍선아바타{position:static;margin:12px 14px 2px;font-size:15px;color:#7a5a3a;background:#fff8e8;border:2px solid #ffe6b0;border-radius:18px;padding:8px 12px;text-align:center;line-height:1.35;flex:none}
+#아바타-로비{width:auto;height:clamp(120px,24vh,210px);margin:2px auto;filter:drop-shadow(0 6px 12px rgba(0,0,0,.14))}
+#아바타-로비,#아바타-큰{display:flex;align-items:center;justify-content:center}
+#아바타-로비 svg,#아바타-큰 svg{height:100%;width:auto;max-width:100%;display:block}
+.꾸미기버튼{width:calc(100% - 24px);margin:0 12px 12px;background:linear-gradient(180deg,#b39ddb,#8c6fd6);color:#fff;font-size:22px;border-radius:22px;padding:11px 0;box-shadow:0 5px 0 #6f56b8,0 10px 18px rgba(140,111,214,.3);flex:none}
+.꾸미기버튼:active{transform:translateY(4px);box-shadow:0 1px 0 #6f56b8}
+.아바타행{display:flex;align-items:center;gap:10px;padding:8px 12px;flex:none}
+.아바타행 .이름라벨{font-size:16px;color:#8a7ba8}
+.랭킹판{flex:none;padding:14px 16px}
+.랭킹제목{font-size:21px;display:flex;gap:8px;align-items:center;color:#2c5f8a;margin-bottom:10px}
+.등급줄{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.등급뱃지{width:62px;height:62px;border-radius:50%;background:linear-gradient(160deg,#ffe28a,#ff9d3c);display:grid;place-items:center;font-size:32px;flex:none;box-shadow:0 4px 10px rgba(255,150,0,.4)}
+.등급이름{font-size:22px;color:#5a4a2a}
+.등급다음{font-size:14px;color:#9a8c6a}
+.게이지{height:14px;background:#f0ead9;border-radius:20px;overflow:hidden;margin-top:6px}
+.게이지 div{height:100%;background:linear-gradient(90deg,#9be07c,#4fc3a1);border-radius:20px;transition:width .6s}
+.통계{display:flex;gap:8px;margin-top:12px}
+.통계 .칸{flex:1;background:#f4f9f2;border-radius:16px;padding:8px 4px;text-align:center}
+.통계 .칸 .v{font-size:20px;color:#2e7d32}
+.통계 .칸 .t{font-size:12px;color:#7f9c77}
+.등급작은말{font-size:13px;color:#b0a08c;margin-top:8px;text-align:center}
+
+/* ---------- 옷방 ---------- */
+.옷몸{flex:1;display:flex;gap:16px;min-height:0;padding-bottom:12px}
+.미리보기판{width:38%;min-width:280px;background:rgba(255,255,255,.90);border-radius:28px;border:3px solid var(--테두리);box-shadow:0 6px 0 rgba(0,0,0,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-height:0}
+#아바타-큰{height:min(50vh,420px);filter:drop-shadow(0 8px 16px rgba(0,0,0,.15));flex:none}
+.미리보기판 .보석버튼{position:absolute;top:14px;right:14px}
+.아이템칸{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;min-height:0}
+.탭줄{display:flex;gap:8px;flex-wrap:wrap;flex:none}
+.탭{background:#fff;border-radius:40px;padding:8px 18px;font-size:19px;box-shadow:0 3px 0 rgba(0,0,0,.08);opacity:.8}
+.탭.골라{background:linear-gradient(180deg,#8ce0f0,#3fa9d6);color:#fff;opacity:1;box-shadow:0 3px 0 #2e86ad}
+.아이템그리드{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px;padding:6px 2px;align-content:start}
+.아이템{
+  background:#fff;border-radius:20px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  box-shadow:0 4px 0 rgba(0,0,0,.07);border:3px solid #f0f0f0;transition:transform .08s;
+}
+.아이템:active{transform:scale(.96)}
+.아이템.입고있다{border-color:#7ed8ff;box-shadow:0 4px 0 #7ed8ff,0 0 0 2px #7ed8ff inset}
+.아이템.못삼{opacity:.55}
+.아이템 .미니{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:34px;overflow:hidden}
+.아이템 .미니.피부칩{border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px #eee}
+.아이템 .미니.이름칩{font-size:17px;color:#7a5a3a}
+.아이템 .품명{font-size:17px;line-height:1.25;text-align:center}
+.아이템 .가격{font-size:15px;display:flex;align-items:center;gap:4px}
+.아이템 .가격 .다이아{font-size:16px}
+.아이템 .소유표시{font-size:13px;color:#2e7d32}
+.빈칸말{color:#8fa8b8;font-size:18px;text-align:center;padding:20px}
+
+/* ---------- 게임/퀴즈 공통 화면 ---------- */
+.플레이몸{flex:1;display:flex;flex-direction:column;gap:10px;min-height:0;padding-bottom:10px}
+.상태줄{display:flex;align-items:center;justify-content:center;gap:18px;flex:none;background:rgba(255,255,255,.9);border-radius:40px;padding:9px 24px;box-shadow:0 4px 0 rgba(0,0,0,.05)}
+.하트{color:#ff5d8f;font-size:24px;letter-spacing:2px}
+.점수{font-size:22px;color:#2c5f8a}
+.점수 .다이아{font-size:20px}
+.스테이지{flex:1;min-height:0;background:rgba(255,255,255,.9);border-radius:30px;border:3px solid var(--테두리);box-shadow:0 6px 0 rgba(0,0,0,.04);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.중심말{position:absolute;left:0;right:0;top:0;bottom:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:20px;z-index:5}
+.중심말.보여{display:flex}
+.중심말.위에{top:auto;bottom:0;height:auto;z-index:4;padding:12px 16px 14px}
+.중심말.위에.보여{display:flex}
+.확인버튼{background:linear-gradient(180deg,#9be07c,#5cb85c);color:#fff;font-size:22px;padding:12px 30px;border-radius:22px;box-shadow:0 5px 0 #3f8f3f}
+.다시버튼{background:linear-gradient(180deg,#7ecdf5,#3a9bdb);color:#fff;font-size:22px;padding:12px 30px;border-radius:22px;box-shadow:0 5px 0 #2a74ab}
+
+/* ---------- 분리배출 ---------- */
+.분리무대{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 12px;min-height:0}
+.분리카드{width:min(300px,60%);background:linear-gradient(160deg,#fdf4ff,#ffe9f3);border:3px solid #ffc6de;border-radius:26px;text-align:center;padding:14px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.분리카드 .큰이모지{font-size:clamp(70px,13vh,110px);display:block;animation:둥둥 2.4s ease-in-out infinite}
+.분리카드 .이름{font-size:24px;color:#7a4a63;margin-top:4px}
+.분리바닥{width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.통{
+  background:linear-gradient(180deg,#fff,#f3fbfd);border-radius:16px 16px 22px 22px;padding:8px 4px 10px;
+  box-shadow:0 5px 0 rgba(0,0,0,.08);border:3px solid #e3f2f7;text-align:center;transition:transform .08s;
+}
+.통:active{transform:scale(.95)}
+.통 .뚜껑{width:70%;height:12px;border-radius:8px;margin:0 auto 4px;display:block}
+.통 .몸{font-size:clamp(34px,6vh,48px);display:block;line-height:1.15}
+.통 .라벨{font-size:clamp(13px,1.8vh,16px);color:#4a5a66}
+.통.정답불{animation:정답반짝 .5s ease 2}
+@keyframes 정답반짝{50%{transform:scale(1.12);border-color:#7ed321}}
+.통.오답불{animation:오답흔들 .4s ease 2}
+@keyframes 오답흔들{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.말풍선{background:#fff8e8;border:2px solid #ffe2a8;border-radius:18px;padding:8px 16px;font-size:20px;color:#7a5a3a;text-align:center;line-height:1.4;margin-top:8px;flex:none;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.말풍선.정답색{background:#eafae2;border-color:#a8e08f;color:#35632a}
+.말풍선.오답색{background:#ffecec;border-color:#ffb3b3;color:#8a2f2f}
+
+/* ---------- 퀴즈 ---------- */
+.퀴즈몸{flex:1;display:flex;flex-direction:column;min-height:0;padding:10px 0 12px}
+.문항상자{background:rgba(255,255,255,.92);border-radius:24px;padding:16px 18px;text-align:center;flex:none;border:3px solid var(--테두리);box-shadow:0 5px 0 rgba(0,0,0,.04)}
+.문항상자.보스상자{background:linear-gradient(180deg,#f3edff,#e3d7ff);border-color:#b39ddb;box-shadow:0 5px 0 rgba(140,111,214,.25),0 0 0 4px #efe7ff inset}
+.문항상자.보스상자 .문항번호{color:#6d4fc2;font-size:21px;letter-spacing:1px;animation:둥둥 1.6s ease-in-out infinite}
+.문항번호{font-size:16px;color:#9aa;letter-spacing:2px}
+.문항{font-size:clamp(22px,4vh,32px);margin-top:6px;line-height:1.4}
+.보기들{flex:1;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px;min-height:0}
+.보기{
+  background:#fff;border-radius:20px;font-size:clamp(18px,3vh,24px);padding:14px 12px;line-height:1.35;
+  box-shadow:0 4px 0 rgba(0,0,0,.07);border:3px solid #eef3f6;text-align:center;transition:transform .08s;
+}
+.보기:active{transform:scale(.97)}
+.보기.정답불{background:#eafae2;border-color:#8fd06a}
+.보기.오답불{background:#ffecec;border-color:#ff8f8f}
+.해설줄{margin-top:12px;flex:none;background:#f3f9ff;border-radius:18px;padding:10px 16px;font-size:19px;text-align:center;line-height:1.45;min-height:60px}
+.퀴즈끝이모지{font-size:80px}
+
+/* ---------- 포스터 ---------- */
+.탭크기{display:flex;gap:10px;padding:12px 0 6px;flex:none}
+.탭크기 .탭{font-size:22px}
+.포스터몸{flex:1;min-height:0;display:flex;gap:14px;padding-bottom:12px}
+.그림판칸{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+.도구줄{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 12px;background:rgba(255,255,255,.95);border-radius:20px 20px 0 0;border:3px solid var(--테두리);border-bottom:none}
+.도구줄 .그룹{display:flex;gap:5px;align-items:center}
+.도구줄 .그룹+.그룹::before{content:"";width:2px;height:26px;background:#e4ecf0;margin:0 6px;display:inline-block}
+.작은도구{width:38px;height:38px;border-radius:12px;background:#f0f6fa;font-size:22px;display:grid;place-items:center;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.작은도구.골라{background:#cdeaff;outline:3px solid #7ecdf5}
+.색점{width:28px;height:28px;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px #dce4e9;flex:none}
+.색점.골라{box-shadow:0 0 0 3px #fff,0 0 0 5px #7ecdf5}
+.캔버스겉{flex:1;min-height:100px;background:#fff;border:3px solid var(--테두리);border-radius:0 0 22px 22px;border-top:none;display:grid;place-items:center;padding:10px;position:relative;overflow:hidden}
+.도구바닥{flex:none;flex-wrap:wrap;justify-content:flex-start;border-radius:0;border-top:3px solid #ffe9c0;background:linear-gradient(180deg,#fff8e8,#fff)}
+.도구바닥 .작은글{margin-left:auto}
+.올리기메인{background:linear-gradient(180deg,#8ee07a,#4caf50)!important;color:#fff!important;font-size:23px;padding:12px 22px;box-shadow:0 5px 0 #368a3a!important}
+.올리기메인:active{box-shadow:0 1px 0 #368a3a!important;transform:translateY(4px)}
+.리셋메인{background:#ffecec!important;color:#b03a3a!important;border:2px solid #ffb9b9;font-size:23px;padding:12px 22px}
+.리셋메인:active{background:#ffd6d6!important}
+.되돌리기버튼.못씀{opacity:.5}
+.컬러픽커{width:44px;height:32px;padding:0 2px;border-radius:12px!important;border:2px solid #fff!important;background:#fff;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.12)!important}
+.색점.컬러픽커.골라{box-shadow:0 0 0 3px #fff,0 0 0 5px #7ecdf5!important}
+#포스터배경캔버스,#포스터캔버스{grid-area:1/1;height:100%;width:auto;max-width:100%;max-height:100%;aspect-ratio:3/2;border-radius:12px;touch-action:none}
+#포스터배경캔버스{background:#fff;pointer-events:none;z-index:0}
+#포스터캔버스{position:relative;z-index:1;cursor:crosshair}
+.크기그룹 input[type=range]{width:120px;height:30px;accent-color:#38a8d8;cursor:pointer}
+.크기숫자{min-width:30px;text-align:center;font-size:16px;color:#3b5b73;background:#eaf6ff;border-radius:10px;padding:2px 4px}
+.도구줄 input[type=text]{font-family:inherit;font-size:18px;border:2px solid #dbe6ec;border-radius:12px;padding:6px 10px;width:210px;max-width:35vw}
+.전시칸{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;align-content:start;padding:10px 2px}
+.포스터몸.전시몸{flex-direction:column;background:rgba(255,255,255,.55);border-radius:24px;padding:10px;border:3px solid var(--테두리)}
+.전시도구줄{display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex:none;padding:2px 4px 10px}
+.전시도구줄 .도움말{font-size:16px;color:#7b93ad;flex:1;min-width:180px;text-align:right}
+.전시리셋버튼{background:#ffecec;color:#b03a3a;border:2px solid #ffc9c9}
+.전시리셋버튼.눌림{background:#ff8f8f;color:#fff;transform:scale(1.05)}
+.전시카드{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.06);border:3px solid #f0f0f0;position:relative;display:flex;flex-direction:column}
+.전시카드 img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.전시카드 .설명{padding:8px 10px;font-size:16px;text-align:center;line-height:1.3}
+.전시카드 .지우기{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);font-size:16px;display:grid;place-items:center}
+.우리말안내{background:#fff8e8;border:2px dashed #ffd98a;border-radius:20px;padding:12px 16px;font-size:18px;line-height:1.5;text-align:center;color:#8a6a30}
+
+/* ---------- 영상 ---------- */
+.영상몸{flex:1;display:flex;gap:14px;min-height:0;padding-bottom:12px}
+.영상목록칸{width:280px;flex:none;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0;padding-right:4px}
+.영상항목{background:rgba(255,255,255,.92);border-radius:20px;padding:12px;box-shadow:0 4px 0 rgba(0,0,0,.05);display:flex;gap:10px;align-items:center;border:3px solid transparent;text-align:left}
+.영상항목.골라{border-color:#7ed8ff;background:#f2fbff}
+.영상항목 .v이모지{font-size:34px}
+.영상항목 .v제목{font-size:18px;line-height:1.25;color:#3b5b73}
+.영상항목 .v봤다{font-size:13px;color:#7fb05f}
+.플레이어칸{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;min-height:0}
+.무대{
+  flex:1;min-height:0;border-radius:26px;border:4px solid #fff;box-shadow:0 8px 0 rgba(0,0,0,.06);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px;gap:8px;
+  background:linear-gradient(180deg,#cdeaff,#fff0d8);
+}
+.무대 .장면이모지{font-size:clamp(70px,16vh,130px);animation:둥둥 3s ease-in-out infinite;filter:drop-shadow(0 8px 12px rgba(0,0,0,.18))}
+.무대 .장면말{font-size:clamp(22px,4vh,34px);line-height:1.5;color:#2c4363;max-width:92%}
+.무대 .작은계기{font-size:18px;color:#7b93ad;background:rgba(255,255,255,.7);padding:4px 14px;border-radius:30px}
+.플레이줄{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.95);border-radius:40px;padding:10px 18px;box-shadow:0 4px 0 rgba(0,0,0,.06);flex:none}
+.플레이버튼{width:56px;height:56px;border-radius:50%;background:linear-gradient(180deg,#8ce0f0,#38a8d8);color:#fff;font-size:24px;display:grid;place-items:center;box-shadow:0 4px 0 #2b85b0;flex:none}
+.플레이버튼:active{transform:translateY(3px);box-shadow:0 1px 0 #2b85b0}
+.진행바{flex:1;height:14px;background:#e5edf2;border-radius:20px;overflow:hidden}
+.진행바 div{height:100%;width:0%;background:linear-gradient(90deg,#ffe082,#ff8c42);border-radius:20px}
+.실천줄{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.실천칩{background:#fff;border-radius:16px;padding:7px 12px;font-size:16px;box-shadow:0 3px 0 rgba(0,0,0,.07);color:#3f7a4f;border:2px solid #dff0d6}
+
+/* ---------- AI 대화 ---------- */
+.gai{background:linear-gradient(160deg,#4fd1d9,#2a9fd4)}
+.기능넓게{grid-column:1/-1;flex-direction:row;justify-content:center;gap:16px;padding:14px}
+.기능넓게 .아이콘{font-size:clamp(34px,5vh,52px)}
+.기능넓게 .한줄{flex:0 1 auto}
+.닉네임칩{background:#fff;border:2px solid #ffe9c0;color:#8a6a30;border-radius:30px;padding:6px 18px;font-size:18px;margin:2px 0 8px;box-shadow:0 3px 0 rgba(0,0,0,.07)}
+.닉네임칩:active{transform:translateY(2px)}
+.ai몸{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;padding-bottom:12px}
+.ai메시지{flex:1;min-height:0;background:rgba(255,255,255,.93);border-radius:24px;border:3px solid var(--테두리);box-shadow:0 6px 0 rgba(0,0,0,.04);overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.ai말{max-width:78%;padding:10px 14px;border-radius:20px;font-size:18px;line-height:1.5;box-shadow:0 3px 8px rgba(0,0,0,.06);white-space:pre-line}
+.ai말.봇{align-self:flex-start;background:#eef7fd;border:2px solid #d3ecf7;border-top-left-radius:6px;color:#33556e}
+.ai말.나{align-self:flex-end;background:linear-gradient(180deg,#8ce0f0,#4fb7de);color:#fff;border-top-right-radius:6px}
+.ai말.로딩{color:#7b93ad;background:#f2f7fa;border:2px dashed #cfe6f0}
+.ai칩들{display:flex;gap:8px;flex-wrap:wrap;flex:none}
+.ai칩들 .칩{background:#fff;border-radius:30px;padding:8px 14px;font-size:16px;color:#3b5b73;box-shadow:0 3px 0 rgba(0,0,0,.07);border:2px solid #e2edf3}
+.ai칩들 .칩:active{transform:translateY(2px)}
+.ai입력줄{display:flex;gap:10px;flex:none;background:rgba(255,255,255,.95);border-radius:40px;padding:10px;border:3px solid var(--테두리)}
+.ai입력줄 input{flex:1;min-width:0;font-family:inherit;font-size:19px;border:none;outline:none;background:transparent;padding:4px 8px;color:var(--본문)}
+.ai보내기{background:linear-gradient(180deg,#8ce0f0,#2a9fd4);color:#fff;font-size:19px;border-radius:30px;padding:8px 22px;box-shadow:0 4px 0 #23749c;flex:none}
+.ai보내기:active{transform:translateY(3px);box-shadow:0 1px 0 #23749c}
+
+/* ---------- 보석 반짝 효과 ---------- */
+.보석튀다{position:fixed;font-size:26px;z-index:99;pointer-events:none;animation:튀다 1.1s ease-out forwards}
+@keyframes 튀다{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:1;transform:translateY(-20px) scale(1.25)}100%{transform:translateY(-120px) scale(1);opacity:0}}
+.축하이모지{font-size:54px;animation:튀다 1s ease-out forwards}
+
+.실영상칸{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;padding:4px}
+.실영상감싸기{flex:1;min-height:0;background:#0b2545;border-radius:22px;border:4px solid #fff;box-shadow:0 8px 0 rgba(0,0,0,.06);overflow:hidden;display:grid;place-items:center;padding:6px}
+#실영상iframe{height:100%;width:auto;aspect-ratio:16/9;max-width:100%;max-height:100%;border:0;border-radius:14px;background:#000}
+.실영상이름{font-size:18px;color:#3b5b73;background:rgba(255,255,255,.92);border-radius:20px;padding:8px 16px;text-align:center;line-height:1.4;flex:none}
+
+@media (max-width:900px){
+  .옆판{width:250px}
+  .보기들{grid-template-columns:1fr}
+  .영상몸,.옷몸,.포스터몸,.로비몸{flex-direction:column}
+  .영상목록칸{width:100%;flex-direction:row}
+  .영상항목{flex:none;width:200px}
+  .미리보기판{width:100%;min-height:240px;height:240px}
+  .옷몸{overflow-y:auto}
+  .아이템칸{min-height:420px}
+  .분리바닥{grid-template-columns:repeat(5,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- 배경 하늘 장식 -->
+<div id="하늘">
+  <div class="구름 a">☁️</div>
+  <div class="구름 b">☁️</div>
+  <div class="구름 c">☁️</div>
+  <div class="언덕"></div>
+  <div class="언덕 우"></div>
+  <div class="꽃장식" style="left:12px">🌷🌸🌼🌺🌼🌸</div>
+  <div class="꽃장식" style="right:12px">🌸🌼🌷🌺🌸</div>
+  <div class="심장" style="left:30%;bottom:26px;animation-delay:.2s">💚</div>
+  <div class="심장" style="left:66%;bottom:40px;animation-delay:1s">💙</div>
+  <div class="심장" style="right:24%;bottom:22px;animation-delay:1.8s">⭐</div>
+</div>
+
+<div class="해글로벌" id="태양" title="해님을 눌러 보세요">🌞</div>
+
+<!-- ============ 1. 인트로 ============ -->
+<div class="화면 켜짐" id="화면-인트로">
+  <div class="보석알 인트로"><span class="다이아">💎</span><span class="보석수">0</span></div>
+  <div class="타이틀존">
+    <div class="지구이모지">🌍</div>
+    <h1 class="제목글">지구 지킴이 캠페인</h1>
+    <div class="부제">놀면서 배우는 환경 지킴이 놀이터!</div>
+    <div class="인트로버튼존">
+      <button class="큰버튼" id="시작버튼">🎮 시작하기</button>
+      <button class="작은글" id="소개버튼" style="border:none">우리 캠페인이 뭐예요?</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 2. 로비 ============ -->
+<div class="화면" id="화면-로비">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-인트로">🏠</button>
+      <div class="제목줄">🌍 지구 지킴이 놀이터</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="로비몸">
+      <div class="주무대">
+        <div class="좌측제목">어떤 것을 해 볼까요?</div>
+        <div class="기능그리드">
+          <button class="기능 g분리" data-화면="화면-분리">
+            <span class="보상 숨김" data-보상="분리">💎 +5</span>
+            <span class="아이콘">♻️</span>
+            <span class="이름">분리배출 게임</span>
+            <span class="한줄">섞인 쓰레기를 바르게 나눠요!</span>
+          </button>
+          <button class="기능 g포스터" data-화면="화면-포스터">
+            <span class="보상 숨김" data-보상="포스터">💎 +10</span>
+            <span class="아이콘">🎨</span>
+            <span class="이름">환경 포스터</span>
+            <span class="한줄">그리고 만들고, 전시해요!</span>
+          </button>
+          <button class="기능 g퀴즈" data-화면="화면-퀴즈">
+            <span class="보상 숨김" data-보상="퀴즈">💎 +10</span>
+            <span class="아이콘">🧠</span>
+            <span class="이름">지구온난화 퀴즈</span>
+            <span class="한줄">맞힐 때마다 보석이 쏟아져요!</span>
+          </button>
+          <button class="기능 g영상" data-화면="화면-영상">
+            <span class="보상 숨김" data-보상="영상">💎 +5</span>
+            <span class="아이콘">📺</span>
+            <span class="이름">학습 영상</span>
+            <span class="한줄">지구 지키는 법을 배워요!</span>
+          </button>
+          <button class="기능 gai 기능넓게" data-화면="화면-AI">
+            <span class="아이콘">🤖</span>
+            <span class="이름">AI 지구친구와 대화</span>
+            <span class="한줄">궁금한 지구 이야기를 물어보세요!</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="옆판">
+        <div class="캐릭터판 로비카드">
+          <div class="말풍선아바타" id="아바타인사">안녕! 나랑 놀자~ 🌱</div>
+          <div id="아바타-로비"></div>
+          <div class="랜덤땅">🌿</div>
+          <div class="아바타행">
+            <button class="닉네임칩" id="닉네임열기">🐣 지구 지킴이 ✏️</button>
+          </div>
+          <button class="꾸미기버튼" id="옷방버튼">✨ 내 캐릭터 꾸미기</button>
+        </div>
+
+        <div class="랭킹판 로비카드">
+          <div class="랭킹제목">🏆 우리의 랭킹</div>
+          <div class="등급줄">
+            <div class="등급뱃지" id="등급뱃지">🌱</div>
+            <div>
+              <div class="등급이름" id="등급이름">새싹 지킴이</div>
+              <div class="등급다음" id="등급다음"></div>
+            </div>
+          </div>
+          <div class="게이지"><div id="등급게이지" style="width:0%"></div></div>
+          <div class="통계">
+            <div class="칸"><div class="v" id="최고퀴즈">0</div><div class="t">🧠 최고 퀴즈</div></div>
+            <div class="칸"><div class="v" id="최고분리">0</div><div class="t">♻️ 최고 분리</div></div>
+            <div class="칸"><div class="v" id="모은보석">0</div><div class="t">💎 모은 보석</div></div>
+          </div>
+          <div class="등급작은말">놀면서 기록이 쌓이면 등급이 올라가요!</div>
+        </div>
+      </div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- ============ 3. 옷방 ============ -->
+<div class="화면" id="화면-옷방">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-로비">←</button>
+      <div class="제목줄">✨ 내 캐릭터 꾸미기</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="옷몸">
+      <div class="미리보기판">
+        <div class="보석알 보석버튼"><span class="다이아">💎</span><span class="보석수">0</span></div>
+        <div id="아바타-큰"></div>
+        <div style="font-size:18px;color:#8a7ba8;padding:4px 14px 10px;text-align:center" id="아바타이름줄">보석으로 새 옷을 사 입혀 보세요!</div>
+      </div>
+      <div class="아이템칸">
+        <div class="탭줄" id="옷탭줄"></div>
+        <div class="아이템그리드" id="옷그리드"></div>
+      </div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- ============ 4. 분리배출 ============ -->
+<div class="화면" id="화면-분리">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-로비">←</button>
+      <div class="제목줄">♻️ 분리배출 게임</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="플레이몸">
+      <div class="상태줄">
+        <span class="하트" id="분리하트"></span>
+        <span class="점수">점수 <span id="분리점수">0</span></span>
+      </div>
+      <div class="스테이지">
+        <div class="중심말" id="분리끝말">
+          <div class="분리끝이모지" id="분리끝이모지">🏆</div>
+          <div style="font-size:30px" id="분리끝타이틀">다 끝났어요!</div>
+          <div style="font-size:22px" id="분리끝점수"></div>
+          <div style="display:flex;gap:12px;margin-top:6px">
+            <button class="다시버튼" id="분리다시">🔁 한 번 더!</button>
+            <button class="둥근버튼" data-화면="화면-로비">로비로</button>
+          </div>
+        </div>
+        <div class="분리무대">
+          <div class="분리카드" id="분리카드">
+            <span class="큰이모지" id="분리이모지">🥤</span>
+            <div class="이름" id="분리이름">페트병</div>
+          </div>
+          <div class="분리바닥" id="분리통들"></div>
+        </div>
+        <div class="중심말 위에" id="분리피드백">
+          <div style="font-size:20px" id="분리피드백글"></div>
+        </div>
+      </div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- ============ 5. 퀴즈 ============ -->
+<div class="화면" id="화면-퀴즈">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-로비">←</button>
+      <div class="제목줄">🧠 지구온난화 퀴즈</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="플레이몸">
+      <div class="상태줄">
+        <span class="점수">맞힌 문제 <span id="퀴즈맞음">0</span> / <span id="퀴즈전체">8</span></span>
+      </div>
+      <div class="스테이지" id="퀴즈스테이지">
+        <div class="중심말" id="퀴즈끝말">
+          <div class="퀴즈끝이모지" id="퀴즈끝이모지">🎉</div>
+          <div style="font-size:34px">퀴즈 끝!</div>
+          <div style="font-size:24px" id="퀴즈끝점수"></div>
+          <div style="font-size:20px;color:#7b93ad" id="퀴즈끝최고"></div>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <button class="다시버튼" id="퀴즈다시">🔁 다시 풀기</button>
+            <button class="둥근버튼" data-화면="화면-로비">로비로</button>
+          </div>
+        </div>
+        <div class="퀴즈몸" id="퀴즈몸체">
+          <div class="문항상자">
+            <div class="문항번호" id="퀴즈현황">1 / 8</div>
+            <div class="문항" id="퀴즈문항"></div>
+          </div>
+          <div class="보기들" id="퀴즈보기들"></div>
+          <div class="해설줄" id="퀴즈해설">정답을 골라 보세요!</div>
+        </div>
+      </div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- ============ 6. 포스터 ============ -->
+<div class="화면" id="화면-포스터">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-로비">←</button>
+      <div class="제목줄">🎨 환경 포스터 만들기</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="탭크기">
+      <button class="탭 골라" data-포스터탭="만들기">🖌️ 만들기</button>
+      <button class="탭" data-포스터탭="전시관">🖼️ 전시관</button>
+    </div>
+    <div class="포스터몸" id="포스터칸-만들기">
+      <div class="그림판칸">
+        <div class="도구줄">
+          <div class="그룹" id="붓도구들"></div>
+          <div class="그룹" id="색모음"></div>
+          <div class="그룹" id="도장들"></div>
+          <div class="그룹" id="글씨칸">
+            <button class="작은도구" data-도구="글" title="글씨">🔤</button>
+            <input type="text" id="글씨입력" placeholder="포스터 문구" maxlength="18" value="지구를 지켜요!">
+          </div>
+          <div class="그룹 크기그룹">
+            <span style="font-size:15px;color:#7b93ad">📏 크기</span>
+            <input type="range" id="크기슬라이더" min="24" max="200" value="80" aria-label="크기">
+            <span class="크기숫자" id="크기숫자">80</span>
+          </div>
+        </div>
+        <div class="도구줄 도구바닥">
+          <button class="둥근버튼 되돌리기버튼" id="포스터되돌리기">↩️ 되돌리기</button>
+          <button class="둥근버튼 리셋메인" id="포스터비우기">🗑️ 그림 리셋하기</button>
+          <button class="둥근버튼 올리기메인" id="포스터전시하기">🖼️ 전시관에 올리기 💎+10</button>
+          <button class="둥근버튼" id="포스터저장">💾 그림 저장</button>
+          <span class="작은글" style="background:#eaf6ff;color:#3e7ca3;margin-left:auto">도우미한테 말하면 AI가 우리 포스터도 그려 줘요!</span>
+        </div>
+        <div class="캔버스겉">
+          <canvas id="포스터배경캔버스" width="1080" height="720"></canvas>
+          <canvas id="포스터캔버스" width="1080" height="720"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="포스터몸 전시몸" id="포스터칸-전시관" style="display:none">
+      <div class="전시도구줄">
+        <button class="둥근버튼" id="전시새로만들기">🖌️ 새 전시물 만들기</button>
+        <button class="둥근버튼 전시리셋버튼" id="전시리셋">🧹 전시물 전부 비우기</button>
+      </div>
+      <div class="전시칸" id="전시그리드"></div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- ============ 7. 영상 ============ -->
+<div class="화면" id="화면-영상">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-로비">←</button>
+      <div class="제목줄">📺 지구를 배우는 학습 영상</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="탭크기">
+      <button class="탭 골라" data-비디오탭="우리">🎬 우리 학습 영상</button>
+      <button class="탭" data-비디오탭="뉴스">📰 진짜 뉴스</button>
+      <button class="탭" data-비디오탭="강의">📚 과학 강의</button>
+    </div>
+    <div class="영상몸">
+      <div class="영상목록칸" id="영상목록칸"></div>
+      <div class="플레이어칸">
+        <div id="플레이우리" style="display:flex;flex-direction:column;gap:10px;min-height:0;flex:1">
+          <div class="무대" id="영상무대">
+            <div class="작은계기" id="영상제목표시"></div>
+            <div class="장면이모지" id="영상이모지">🌍</div>
+            <div class="장면말" id="영상말">재생을 눌러 보세요!</div>
+          </div>
+          <div class="플레이줄">
+            <button class="플레이버튼" id="영상플레이">▶️</button>
+            <div class="진행바"><div id="영상진행"></div></div>
+            <div style="font-size:17px" id="영상계기"></div>
+          </div>
+          <div class="실천줄" id="영상실천"></div>
+        </div>
+        <div class="실영상칸" id="플레이실" style="display:none">
+          <div class="실영상감싸기">
+            <iframe id="실영상iframe" src="" title="진짜 영상" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="실영상이름" id="실영상이름"></div>
+        </div>
+      </div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- ============ 8. AI 지구친구 ============ -->
+<div class="화면" id="화면-AI">
+  <div class="안쪽">
+    <div class="윗줄">
+      <button class="뒤로" data-화면="화면-로비">←</button>
+      <div class="제목줄">🤖 AI 지구친구와 대화</div>
+      <div class="보석알"><span class="다이아">💎</span><span class="보석수">0</span></div>
+    </div>
+    <div class="ai몸">
+      <div class="ai메시지" id="ai메시지"></div>
+      <div class="ai칩들" id="ai칩들"></div>
+      <div class="ai입력줄">
+        <input type="text" id="ai입력" placeholder="궁금한 걸 물어보세요! (예: 지구온난화가 뭐야?)" maxlength="60">
+        <button class="ai보내기" id="ai보내기">보내기 ➤</button>
+      </div>
+    </div>
+    <div class="하단마진"></div>
+  </div>
+</div>
+
+<!-- 태양 이스터에그 모달 -->
+<div class="중심말" id="태양모달" style="z-index:65;background:rgba(74,59,82,.45)">
+  <div style="background:#fff;border-radius:30px;max-width:560px;width:92%;padding:26px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25);max-height:84vh;overflow-y:auto">
+    <div style="font-size:60px">🌞</div>
+    <h2 style="color:#e08b00;margin:4px 0 6px">해님의 비밀! 탄소 줄이는 실천법</h2>
+    <p style="font-size:17px;color:#8a6a30;margin-bottom:12px">오늘부터 하나만 골라 실천해 봐요. 작은 실천이 모이면 지구가 웃어요! 💚</p>
+    <div id="태양실천목록" style="text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:16px"></div>
+    <button class="확인버튼" id="태양닫기">해님 고마워요!</button>
+  </div>
+</div>
+
+<!-- 소개 모달 -->
+<div class="중심말" id="소개말" style="z-index:60;background:rgba(74,59,82,.45)">
+  <div style="background:#fff;border-radius:30px;max-width:560px;width:92%;padding:26px 24px;text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.25);max-height:82vh;overflow-y:auto">
+    <h2 style="color:#2c5f8a;margin-bottom:14px">🌍 우리 캠페인</h2>
+    <p style="font-size:20px;line-height:1.7;margin-bottom:8px">
+      지구가 점점 뜨거워지고 있어요. 온실가스 때문에요.<br>
+      우리는 <b>놀면서</b> 지구를 지키는 법을 배워요.<br><br>
+      🎮 쓰레기 분리배출 게임<br>
+      🎨 나만의 환경 포스터 만들기<br>
+      🧠 지구온난화 퀴즈<br>
+      📺 지구를 지키는 학습 영상<br><br>
+      맞히고 만들 때마다 <b>💎 보석</b>이 쌓여요.<br>
+      그 보석으로 내 캐릭터를 예쁘게 꾸밀 수 있어요!<br><br>
+      작은 실천이 모이면 지구가 웃어요. 😊
+    </p>
+    <div style="text-align:center;margin-top:10px">
+      <button class="확인버튼" id="소개닫기">좋아요!</button>
+    </div>
+  </div>
+</div>
+
+<!-- 닉네임 모달 -->
+<div class="중심말" id="닉네임모달" style="z-index:70;background:rgba(74,59,82,.45)">
+  <div style="background:#fff;border-radius:30px;max-width:480px;width:92%;padding:24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)">
+    <h2 style="color:#2c5f8a;margin-bottom:8px">🐣 내 별명 짓기</h2>
+    <p style="font-size:17px;color:#7b93ad;line-height:1.6;margin-bottom:14px">진짜 이름 말고 <b>재미있는 별명</b>을 지어 주세요!<br>예: 별빛거북이, 초록용사, 바다천사</p>
+    <input type="text" id="닉네임입력" maxlength="8" placeholder="별명을 입력하세요" style="width:100%;font-family:inherit;font-size:22px;text-align:center;border:3px solid #dbe6ec;border-radius:16px;padding:10px;margin-bottom:14px">
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="확인버튼" id="닉네임저장">저장하기</button>
+      <button class="둥근버튼" id="닉네임닫기">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   지구 지킴이 캠페인 — 게임 로직
+===================================================================== */
+(function(){
+"use strict";
+
+/* ---------- 상태 (저장) ---------- */
+var 저장키 = "지구지킴이캠페인v1";
+var 기본착용 = {피부:"sk0",머리카락:"h1",상의:"t0",하의:"b0",신발:"w0",얼굴장식:"f0",허리장식:"z0",등장식:"d0"};
+var 상태 = {
+  보석:0, 소유:{}, 착용:Object.assign({},기본착용),
+  퀴즈최고:0, 분리최고:0, 본영상:[],
+  닉네임:"",
+  전시:[]  // {src,cap} 캔버스로 만든 것만
+};
+function 불러오기(){
+  try{
+    var s = localStorage.getItem(저장키);
+    if(!s) return;
+    var d = JSON.parse(s);
+    for(var k in d){ if(d.hasOwnProperty(k)) 상태[k] = d[k]; }
+    for(var k2 in 기본착용){ if(!상태.착용[k2]) 상태.착용[k2] = 기본착용[k2]; }
+  }catch(e){}
+}
+function 저장하기(){
+  try{ localStorage.setItem(저장키, JSON.stringify(상태)); }catch(e){}
+}
+
+/* ---------- 소리 (간단하게) ---------- */
+var 소리끔 = false;
+var 소리ctx = null;
+function 소리(종류){
+  if(소리끔) return;
+  try{
+    if(!소리ctx) 소리ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var o = 소리ctx.createOscillator(), g = 소리ctx.createGain();
+    o.connect(g); g.connect(소리ctx.destination);
+    var freq = 0, dur = 0.16;
+    if(종류==="정답"){ freq=660; }
+    else if(종류==="보석"){ freq=880; }
+    else if(종류==="오답"){ freq=220; }
+    else if(종류==="클릭"){ freq=520; dur=0.08; }
+    else if(종류==="끝"){ freq=990; dur=0.4; }
+    o.type = "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.16, 소리ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, 소리ctx.currentTime + dur);
+    o.start(); o.stop(소리ctx.currentTime + dur);
+  }catch(e){}
+}
+
+/* ---------- 아이템 목록 ---------- */
+var 카탈로그 = {
+  피부:[
+    {id:"sk0",이름:"복숭아 피부",가격:0,색:"#ffe9cf"},
+    {id:"sk1",이름:"구름 피부",가격:6,색:"#fff6ea"},
+    {id:"sk2",이름:"햇살 피부",가격:6,색:"#ffd9a8"},
+    {id:"sk3",이름:"초코 피부",가격:10,색:"#d19a6b"},
+    {id:"sk4",이름:"민트 피부",가격:20,색:"#c9f3d8"}
+  ],
+  머리카락:[
+    {id:"h1",이름:"갈색 숏컷",가격:0,색:"#8a5a3a",스타일:0},
+    {id:"h2",이름:"검정 단발머리",가격:8,색:"#4a3f3f",스타일:1},
+    {id:"h3",이름:"햇살 긴머리",가격:12,색:"#ffd45e",스타일:2},
+    {id:"h4",이름:"보라 양갈래",가격:14,색:"#a98fd6",스타일:3},
+    {id:"h5",이름:"민트 포니테일",가격:14,색:"#7fe0c4",스타일:4},
+    {id:"h6",이름:"분홍 곱슬머리",가격:16,색:"#ffc9e0",스타일:5},
+    {id:"h7",이름:"오렌지 단발머리",가격:16,색:"#ff9d5c",스타일:1},
+    {id:"h8",이름:"초록 숏컷",가격:18,색:"#7cb518",스타일:0},
+    {id:"h9",이름:"하늘 긴머리",가격:22,색:"#6ec6ff",스타일:2}
+  ],
+  상의:[
+    {id:"t0",이름:"하늘 티셔츠",가격:0,색:"#6ec6ff",무늬:0,무늬색:"#ffffff"},
+    {id:"t1",이름:"풀잎 티셔츠",가격:6,색:"#9be07c",무늬:1,무늬색:"#2e7d32"},
+    {id:"t2",이름:"보석 티셔츠",가격:8,색:"#b39ddb",무늬:2,무늬색:"#fff176"},
+    {id:"t3",이름:"딸기 티셔츠",가격:10,색:"#ffb3c6",무늬:3,무늬색:"#ff4081"},
+    {id:"t4",이름:"노랑 별 티셔츠",가격:10,색:"#ffe082",무늬:1,무늬색:"#ff8c42"},
+    {id:"t5",이름:"하트 점퍼",가격:16,색:"#ff8fb3",무늬:3,무늬색:"#fff"},
+    {id:"t6",이름:"바다 줄무늬",가격:16,색:"#4fc3f7",무늬:4,무늬색:"#ffffff"},
+    {id:"t7",이름:"초록 후드티",가격:22,색:"#66bb6a",무늬:2,무늬색:"#ffe082"}
+  ],
+  하의:[
+    {id:"b0",이름:"연두 반바지",가격:0,색:"#aed581",종류:"반바지"},
+    {id:"b1",이름:"파랑 청바지",가격:8,색:"#4d8fd6",종류:"청바지"},
+    {id:"b2",이름:"노랑 치마",가격:10,색:"#ffe082",종류:"치마"},
+    {id:"b3",이름:"하늘 반바지",가격:8,색:"#81d4fa",종류:"반바지"},
+    {id:"b4",이름:"보라 주름치마",가격:14,색:"#b39ddb",종류:"주름치마"},
+    {id:"b5",이름:"초록 멜빵바지",가격:20,색:"#7cb518",종류:"멜빵"},
+    {id:"b6",이름:"주황 긴바지",가격:12,색:"#ffb86b",종류:"긴바지"}
+  ],
+  신발:[
+    {id:"w0",이름:"하양 운동화",가격:0,색:"#ffffff",종류:"운동화"},
+    {id:"w1",이름:"파랑 운동화",가격:6,색:"#4fc3f7",종류:"운동화"},
+    {id:"w2",이름:"빨강 운동화",가격:6,색:"#ff6b6b",종류:"운동화"},
+    {id:"w3",이름:"노랑 장화",가격:10,색:"#ffd54f",종류:"장화"},
+    {id:"w4",이름:"초록 장화",가격:10,색:"#66bb6a",종류:"장화"},
+    {id:"w5",이름:"보라 부츠",가격:14,색:"#b39ddb",종류:"부츠"}
+  ],
+  얼굴장식:[
+    {id:"f0",이름:"없음",가격:0,종류:"없음"},
+    {id:"f1",이름:"둥근 안경",가격:12,종류:"안경",색:"#4a3f3f"},
+    {id:"f2",이름:"금빛 왕관",가격:25,종류:"왕관",색:"#ffd54f"},
+    {id:"f3",이름:"잎사귀 왕관",가격:18,종류:"잎왕관"},
+    {id:"f4",이름:"별 반짝이",가격:8,종류:"별"},
+    {id:"f5",이름:"분홍 꽃",가격:10,종류:"꽃"},
+    {id:"f6",이름:"리본 머리핀",가격:12,종류:"리본"},
+    {id:"f7",이름:"파란 안경",가격:14,종류:"안경",색:"#3f86d6"},
+    {id:"f8",이름:"초록 왕관",가격:25,종류:"왕관",색:"#8bc34a"},
+    {id:"f9",이름:"물방울 반짝이",가격:10,종류:"반짝"},
+    {id:"f10",이름:"별빛 안경",가격:16,종류:"안경",색:"#7e57c2"}
+  ],
+  허리장식:[
+    {id:"z0",이름:"없음",가격:0,종류:"없음"},
+    {id:"z1",이름:"가죽 벨트",가격:6,종류:"벨트",색:"#6b4a2f"},
+    {id:"z2",이름:"하늘 띠",가격:6,종류:"띠",색:"#81d4fa"},
+    {id:"z3",이름:"초록 주머니",가격:12,종류:"주머니",색:"#8bc34a"},
+    {id:"z4",이름:"나비 리본",가격:10,종류:"나비",색:"#ff8fb3"},
+    {id:"z5",이름:"노랑 띠",가격:6,종류:"띠",색:"#ffe082"},
+    {id:"z6",이름:"별 벨트",가격:9,종류:"별",색:"#ff8a65"},
+    {id:"z7",이름:"분홍 앞치마",가격:14,종류:"앞치마",색:"#ffb3c6"},
+    {id:"z8",이름:"보라 주머니",가격:12,종류:"주머니",색:"#b39ddb"},
+    {id:"z9",이름:"체리 띠",가격:10,종류:"나비",색:"#ff5252"}
+  ],
+  등장식:[
+    {id:"d0",이름:"없음",가격:0,종류:"없음"},
+    {id:"d1",이름:"초록 에코 가방",가격:18,종류:"가방",색:"#66bb6a"},
+    {id:"d2",이름:"하늘 에코 가방",가격:18,종류:"가방",색:"#4fc3f7"},
+    {id:"d3",이름:"하양 천사 날개",가격:30,종류:"날개"},
+    {id:"d4",이름:"초록 망토",가격:26,종류:"망토",색:"#43a047"},
+    {id:"d5",이름:"에코 물통",가격:12,종류:"물통",색:"#7fe0c4"},
+    {id:"d6",이름:"보라 나비 날개",가격:34,종류:"나비날개"},
+    {id:"d7",이름:"민트 에코 가방",가격:18,종류:"가방",색:"#7fe0c4"},
+    {id:"d8",이름:"분홍 하트 가방",가격:20,종류:"가방",색:"#ff8fb3"},
+    {id:"d9",이름:"방울 풍선 묶음",가격:22,종류:"풍선"},
+    {id:"d10",이름:"별빛 망토",가격:28,종류:"망토",색:"#5c6bc0"},
+    {id:"d11",이름:"분홍 나비 날개",가격:34,종류:"나비날개",색:"#f8bbd0"}
+  ]
+};
+var 카테고리순서 = ["머리카락","얼굴장식","상의","하의","허리장식","등장식","신발","피부"];
+var 카테고리이름 = {머리카락:"💇 머리카락",얼굴장식:"🎀 얼굴 장식",상의:"👕 상의",하의:"👖 하의",허리장식:"🎗️ 허리 장식",등장식:"🎒 등 장식",신발:"👟 신발",피부:"🧡 피부"};
+var 상점아이콘 = {피부:"🎨",머리카락:"💇",상의:"👕",하의:"👖",신발:"👟",얼굴장식:"🎭",허리장식:"🎀",등장식:"🎒"};
+
+/* ---------- 보석 관리 ---------- */
+function 모두보석반영(){
+  var els = document.querySelectorAll(".보석수");
+  for(var i=0;i<els.length;i++) els[i].textContent = 상태.보석;
+}
+function 보석반짝(x,y,글){
+  var s = document.createElement("span");
+  s.className = "보석튀다";
+  s.textContent = 글 || "💎";
+  s.style.left = x+"px"; s.style.top = y+"px";
+  document.body.appendChild(s);
+  setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); }, 1200);
+}
+function 보석얻기(n, 화면좌표){
+  if(!n) return;
+  상태.보석 += n;
+  저장하기();
+  모두보석반영();
+  갱신랭킹UI();
+  if(화면좌표){ 보석반짝(화면좌표.x, 화면좌표.y, "💎 +"+n); }
+  소리("보석");
+}
+
+/* ---------- 등급 ---------- */
+var 등급표 = [
+  {이름:"새싹 지킴이",이모지:"🌱",필요:0},
+  {이름:"초록 지킴이",이모지:"🌿",필요:150},
+  {이름:"하늘 지킴이",이모지:"💧",필요:450},
+  {이름:"별빛 지킴이",이모지:"⭐",필요:900},
+  {이름:"햇살 지킴이",이모지:"🌻",필요:1600},
+  {이름:"지구 대장",이모지:"🌍",필요:3000}
+];
+function 총점(){
+  return 상태.보석*5 + 상태.퀴즈최고 + 상태.분리최고;
+}
+function 내등급정보(){
+  var 점 = 총점(), now = 등급표[0], next = null;
+  for(var i=0;i<등급표.length;i++){ if(점 >= 등급표[i].필요) now = 등급표[i]; else { next = 등급표[i]; break; } }
+  return {이름:now.이름, 이모지:now.이모지, 필요:now.필요, 다음:next};
+}
+function 갱신랭킹UI(){
+  var g = 내등급정보();
+  var b = document.getElementById("등급뱃지");
+  if(b){ b.textContent = g.이모지; }
+  var n = document.getElementById("등급이름");
+  if(n){ n.textContent = g.이름; }
+  var d = document.getElementById("등급다음");
+  if(d){
+    if(g.다음) d.textContent = "다음 등급까지 " + (g.다음.필요-총점()) + "점!";
+    else d.textContent = "최고 등급이에요! 🎉";
+  }
+  var gg = document.getElementById("등급게이지");
+  if(gg){
+    var 구간 = g.다음 ? (g.다음.필요 - g.필요) : 1;
+    var 지금구간 = g.다음 ? (총점() - g.필요) : 1;
+    gg.style.width = Math.min(100, Math.round(지금구간/구간*100)) + "%";
+  }
+  var set = function(id,val){ var e=document.getElementById(id); if(e) e.textContent = val; };
+  set("최고퀴즈", 상태.퀴즈최고);
+  set("최고분리", 상태.분리최고);
+  set("모은보석", 상태.보석);
+}
+
+/* ---------- 화면 이동 ---------- */
+function 화면가기(id){
+  var all = document.querySelectorAll(".화면");
+  for(var i=0;i<all.length;i++) all[i].classList.remove("켜짐");
+  var t = document.getElementById(id);
+  if(t) t.classList.add("켜짐");
+  if(id==="화면-로비"){
+    갱신랭킹UI();
+    모두보석반영();
+    그리기아바타(document.getElementById("아바타-로비"), false);
+    if(Math.random()<0.35) 아바타인사바꾸기();
+  }
+  if(id==="화면-옷방"){
+    그리기아바타(document.getElementById("아바타-큰"), true);
+    옷탭열기(현재옷탭);
+  }
+  if(id==="화면-분리") 분리게임시작();
+  if(id==="화면-퀴즈") 퀴즈시작();
+  if(id==="화면-포스터") 포스터열림();
+  if(id==="화면-영상") 영상열림();
+  if(id==="화면-AI") AI화면열기();
+  if(id==="화면-인트로"){ 모두보석반영(); }
+}
+document.addEventListener("click", function(e){
+  var t = e.target.closest ? e.target.closest("[data-화면]") : null;
+  if(t){
+    소리("클릭");
+    화면가기(t.getAttribute("data-화면"));
+    return;
+  }
+});
+function 아바타인사바꾸기(){
+  var 인사 = ["안녕! 나랑 놀자~ 🌱","오늘도 지구를 지켜요! 💚","보석 모아 나를 꾸며줘! 💎","나는 지구 지킴이 친구야! 🌍"];
+  var el = document.getElementById("아바타인사");
+  if(el) el.textContent = 인사[Math.floor(Math.random()*인사.length)];
+}
+
+/* 시작 / 소개 */
+document.getElementById("시작버튼").addEventListener("click", function(){ 소리("클릭"); 화면가기("화면-로비"); });
+document.getElementById("소개버튼").addEventListener("click", function(){ 소리("클릭"); document.getElementById("소개말").classList.add("보여"); });
+document.getElementById("소개닫기").addEventListener("click", function(){ document.getElementById("소개말").classList.remove("보여"); });
+document.getElementById("옷방버튼").addEventListener("click", function(){ 소리("클릭"); 화면가기("화면-옷방"); });
+
+/* =====================================================================
+   아바타 그리기 (SVG)
+===================================================================== */
+function 헬퍼(){
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 330" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">';
+}
+function 원(cx,cy,r,fill,extra){
+  return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+fill+'" '+ (extra||"") +'/>';
+}
+function 네모(x,y,w,h,rx,fill,extra){
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+rx+'" fill="'+fill+'" '+ (extra||"") +'/>';
+}
+function 별그리기(cx,cy,r,color){
+  var p = "";
+  for(var i=0;i<10;i++){
+    var rad = (i%2===0)? r : r*0.4;
+    var a = Math.PI/5*i - Math.PI/2;
+    var x = cx + rad*Math.cos(a), y = cy + rad*Math.sin(a);
+    p += (i===0?"M":"L")+x.toFixed(1)+" "+y.toFixed(1)+" ";
+  }
+  p += "Z";
+  return '<path d="'+p+'" fill="'+color+'"/>';
+}
+function 잎(cx,cy,angle,color){
+  return '<g transform="rotate('+angle+' '+cx+' '+cy+')"><ellipse cx="'+cx+'" cy="'+cy+'" rx="13" ry="5" fill="'+color+'"/></g>';
+}
+function 하트(cx,cy,s,color){
+  return '<g transform="translate('+cx+','+cy+') scale('+s+')"><path d="M0 8 C-12 -2 -20 -8 -20 -16 C-20 -24 -10 -26 -6 -20 L0 -12 L6 -20 C10 -26 20 -24 20 -16 C20 -8 12 -2 0 8 Z" fill="'+color+'"/></g>';
+}
+function 화살(cx,cy,angle,color){
+  return '<path d="M'+cx+' '+cy+' l-22 -26 m22 26 l22 -26 m-22 26 l8 -30" stroke="'+color+'" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate('+angle+' '+cx+' '+cy+')"/>';
+}
+
+function 아이템정보(카테고리, id){
+  var list = 카탈로그[카테고리] || [];
+  for(var i=0;i<list.length;i++) if(list[i].id===id) return list[i];
+  return list[0];
+}
+
+function 아바타SVG(){
+  var 착용 = 상태.착용;
+  var 피부 = 아이템정보("피부", 착용.피부), 머리 = 아이템정보("머리카락", 착용.머리카락);
+  var 상의 = 아이템정보("상의", 착용.상의), 하의 = 아이템정보("하의", 착용.하의);
+  var 신발 = 아이템정보("신발", 착용.신발), 얼굴 = 아이템정보("얼굴장식", 착용.얼굴장식);
+  var 허리 = 아이템정보("허리장식", 착용.허리장식), 등 = 아이템정보("등장식", 착용.등장식);
+  var 피부색 = 피부.색, 머리색 = 머리.색, 상의색 = 상의.색, 하의색 = 하의.색, 신발색 = 신발.색;
+  var s = [];
+  var 스타일 = 머리.스타일;
+
+  /* 0) 등장식 (뒤) */
+  if(등.종류==="가방"){
+    s.push(네모(70,150,100,78,24,등.색));
+    s.push(네모(112,144,16,14,6,등.색));
+    s.push(네모(116,148,8,4,2,"#f5e9a8"));
+    s.push('<rect x="70" y="150" width="100" height="78" rx="24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="3"/>');
+  } else if(등.종류==="날개"){
+    s.push('<ellipse cx="62" cy="180" rx="34" ry="60" fill="#f6fbff" transform="rotate(18 62 180)"/><ellipse cx="62" cy="180" rx="16" ry="44" fill="#dff2ff" transform="rotate(18 62 180)"/>');
+    s.push('<ellipse cx="178" cy="180" rx="34" ry="60" fill="#f6fbff" transform="rotate(-18 178 180)"/><ellipse cx="178" cy="180" rx="16" ry="44" fill="#dff2ff" transform="rotate(-18 178 180)"/>');
+  } else if(등.종류==="나비날개"){
+    var 날개색 = 등.색 || "#b39ddb";
+    var 날개속 = "#f3e5ff";
+    s.push('<ellipse cx="58" cy="168" rx="34" ry="52" fill="'+날개색+'" transform="rotate(24 58 168)"/>');
+    s.push('<ellipse cx="182" cy="168" rx="34" ry="52" fill="'+날개색+'" transform="rotate(-24 182 168)"/>');
+    s.push('<ellipse cx="58" cy="182" rx="26" ry="40" fill="'+날개속+'" transform="rotate(24 58 182)" opacity=".8"/>');
+    s.push('<ellipse cx="182" cy="182" rx="26" ry="40" fill="'+날개속+'" transform="rotate(-24 182 182)" opacity=".8"/>');
+    s.push(원(58,164,4,"#fff")); s.push(원(182,164,4,"#fff"));
+  } else if(등.종류==="망토"){
+    s.push('<path d="M84 190 C58 235 60 290 92 296 L148 296 C180 290 182 235 156 190 C150 196 138 200 120 200 C102 200 90 196 84 190 Z" fill="'+등.색+'"/>');
+    s.push('<path d="M84 190 C58 235 60 290 92 296 L148 296 C180 290 182 235 156 190 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3"/>');
+    s.push(별그리기(120,240,7,"#ffe082"));
+    s.push(별그리기(100,262,5,"#fff"));
+    s.push(별그리기(140,268,5,"#fff"));
+  } else if(등.종류==="물통"){
+    s.push(네모(56,206,22,52,10,등.색));
+    s.push(네모(52,200,30,12,6,"#fff"));
+    s.push(네모(60,196,14,10,5,"#4fc3f7"));
+  } else if(등.종류==="풍선"){
+    var 풍선색 = ["#ff8fb3","#ffe082","#7fe0c4","#81d4fa"];
+    var 방울 = [[196,132,24,0],[216,88,26,1],[188,64,20,2]];
+    for(var bi=0; bi<방울.length; bi++){
+      var b = 방울[bi];
+      s.push(원(b[0],b[1],b[2],풍선색[b[3]]));
+      s.push(원(b[0]-7,b[1]-9,5,"#fff"));
+      s.push('<path d="M'+(b[0]-4)+' '+(b[1]+b[2])+' l3 8 l3 -4 Z" fill="'+풍선색[b[3]]+'"/>');
+      s.push('<path d="M'+b[0]+' '+(b[1]+b[2]+10)+' Q 190 200 180 205" stroke="rgba(90,110,140,.6)" stroke-width="2" fill="none"/>');
+    }
+  }
+
+  /* 1) 머리 뒤 (헤어) */
+  if(스타일===1){ /* 단발 짧은 옆머리 (둥글게) */
+    s.push('<ellipse cx="64" cy="112" rx="20" ry="42" fill="'+머리색+'"/>');
+    s.push('<ellipse cx="176" cy="112" rx="20" ry="42" fill="'+머리색+'"/>');
+  } else if(스타일===2 || 스타일===4){ /* 긴머리, 포니테일 옆머리 (둥글게) */
+    s.push('<ellipse cx="62" cy="152" rx="22" ry="82" fill="'+머리색+'"/>');
+    s.push('<ellipse cx="178" cy="152" rx="22" ry="82" fill="'+머리색+'"/>');
+  }
+  if(스타일===3){ /* 양갈래 */
+    s.push(원(64,178,30,머리색));
+    s.push(원(176,178,30,머리색));
+  }
+  if(스타일===4){ /* 포니테일 우측 뿔 */
+    s.push(원(186,148,26,머리색));
+    s.push(원(188,146,8,"#ff8fb3"));
+  }
+
+  /* 2) 다리(살색) + 그림자 */
+  s.push('<ellipse cx="120" cy="316" rx="74" ry="11" fill="rgba(80,60,90,.20)"/>');
+  s.push(네모(99,236,16,52,8,피부색));
+  s.push(네모(125,236,16,52,8,피부색));
+
+  /* 3) 신발 */
+  var 밑창 = 'rgba(70,80,100,.35)';
+  var 신발밑창 = function(x,w){
+    s.push('<rect x="'+x+'" y="'+(292)+'" width="'+w+'" height="6" rx="3" fill="'+밑창+'"/>');
+  };
+  if(신발.종류==="장화"){
+    s.push(네모(84,278,36,24,10,신발색));
+    s.push(네모(120,278,36,24,10,신발색));
+    s.push(네모(88,274,28,8,4,"#ffffff"));
+    s.push(네모(124,274,28,8,4,"#ffffff"));
+    s.push('<rect x="84" y="278" width="36" height="24" rx="10" fill="none" stroke="'+밑창+'" stroke-width="2"/>');
+    s.push('<rect x="120" y="278" width="36" height="24" rx="10" fill="none" stroke="'+밑창+'" stroke-width="2"/>');
+    신발밑창(84,36); 신발밑창(120,36);
+  } else if(신발.종류==="부츠"){
+    s.push(네모(84,274,36,28,10,신발색));
+    s.push(네모(120,274,36,28,10,신발색));
+    s.push(네모(84,282,36,8,3,"rgba(255,255,255,.25)"));
+    s.push('<rect x="84" y="274" width="36" height="28" rx="10" fill="none" stroke="'+밑창+'" stroke-width="2"/>');
+    s.push('<rect x="120" y="274" width="36" height="28" rx="10" fill="none" stroke="'+밑창+'" stroke-width="2"/>');
+    신발밑창(84,36); 신발밑창(120,36);
+  } else {
+    s.push(네모(82,286,40,17,9,신발색));
+    s.push(네모(118,286,40,17,9,신발색));
+    s.push('<rect x="82" y="286" width="40" height="17" rx="9" fill="none" stroke="'+밑창+'" stroke-width="2"/>');
+    s.push('<rect x="118" y="286" width="40" height="17" rx="9" fill="none" stroke="'+밑창+'" stroke-width="2"/>');
+    s.push('<path d="M86 299 h32 M122 299 h32" stroke="#ffffff" stroke-width="3"/>');
+    신발밑창(86,32); 신발밑창(122,32);
+  }
+
+  /* 4) 하의 */
+  if(하의.종류==="반바지"){
+    s.push(네모(93,236,54,30,12,하의색));
+  } else if(하의.종류==="치마"){
+    s.push('<path d="M93 236 L147 236 L157 268 C146 274 136 276 120 276 C104 276 94 274 83 268 Z" fill="'+하의색+'"/>');
+  } else if(하의.종류==="주름치마"){
+    s.push('<path d="M93 236 L147 236 L160 272 C142 280 98 280 80 272 Z" fill="'+하의색+'"/>');
+    s.push('<path d="M120 236 L120 274 M104 236 L100 271 M136 236 L140 271" stroke="rgba(0,0,0,.15)" stroke-width="2"/>');
+  } else if(하의.종류==="청바지"){
+    s.push(네모(93,236,54,58,10,하의색));
+    s.push(네모(97,258,16,16,4,"#a8c6ea"));
+    s.push(네모(127,258,16,16,4,"#a8c6ea"));
+    s.push('<path d="M93 236 L104 244 M147 236 L136 244" stroke="#ffffff" stroke-width="3" fill="none"/>');
+  } else if(하의.종류==="멜빵"){
+    s.push(네모(93,236,54,58,10,하의색));
+    s.push(네모(105,164,9,30,4,하의색));
+    s.push(네모(126,164,9,30,4,하의색));
+    s.push(원(109,168,5,"#ffe082")); s.push(원(130,168,5,"#ffe082"));
+  } else { /* 긴바지 */
+    s.push(네모(93,236,54,58,10,하의색));
+  }
+
+  /* 6) 상의 몸통 + 팔 */
+  s.push(네모(93,158,54,80,20,상의색));
+  s.push(네모(72,168,19,40,9,상의색));
+  s.push(네모(149,168,19,40,9,상의색));
+  s.push(원(80,211,9,피부색));
+  s.push(원(160,211,9,피부색));
+  /* 소매 밑단 선 */
+  s.push(네모(72,200,19,5,2,"rgba(0,0,0,.12)"));
+  s.push(네모(149,200,19,5,2,"rgba(0,0,0,.12)"));
+  /* 상의 무늬 */
+  if(상의.무늬===1){ s.push(별그리기(120,196,10,상의.무늬색)); }
+  else if(상의.무늬===2){ s.push(하트(120,196,1.1,상의.무늬색)); }
+  else if(상의.무늬===3){ s.push('<circle cx="120" cy="196" r="9" fill="'+상의.무늬색+'"/>'); }
+  else if(상의.무늬===4){
+    for(var i=0;i<3;i++) s.push(네모(93,166+i*10,54,5,2,"rgba(255,255,255,.5)"));
+  } else if(상의.무늬===0){
+    s.push(네모(93,170,54,6,3,"rgba(255,255,255,.5)"));
+  }
+
+  /* 6-1) 허리 장식 (몸통 위에) */
+  if(허리.종류==="벨트" || 허리.종류==="별"){
+    s.push(네모(90,224,60,13,6,허리.색));
+    if(허리.종류==="별"){ s.push(별그리기(120,230,9,"#ffe082")); s.push(원(120,230,3,"#fff")); }
+    else { s.push(네모(113,222,14,17,4,"#ffe082")); }
+  } else if(허리.종류==="띠"){
+    s.push(네모(90,222,60,10,5,허리.색));
+    s.push(네모(113,218,14,18,8,"#f5f5f5"));
+  } else if(허리.종류==="주머니"){
+    var 주머니색 = 허리.색 || "#8bc34a";
+    s.push(네모(86,222,30,26,11,주머니색));
+    s.push(네모(124,222,30,26,11,주머니색));
+    s.push('<path d="M96 220 L104 212 L112 220" stroke="#fff" stroke-width="3" fill="none"/>');
+    s.push('<path d="M134 220 L142 212 L150 220" stroke="#fff" stroke-width="3" fill="none"/>');
+  } else if(허리.종류==="앞치마"){
+    s.push('<path d="M100 205 L140 205 L150 258 L90 258 Z" fill="'+허리.색+'"/>');
+    s.push('<path d="M100 205 L92 176 M140 205 L148 176" stroke="'+허리.색+'" stroke-width="6" fill="none" stroke-linecap="round"/>');
+    s.push(하트(120,232,1.1,"#fff"));
+  } else if(허리.종류==="나비"){
+    s.push(네모(90,224,60,8,4,허리.색));
+    s.push('<path d="M120 216 L106 206 L108 222 Z M120 216 L134 206 L132 222 Z" fill="#ff6b9d"/>');
+    s.push(원(120,220,4,허리.색));
+  }
+
+  /* 7) 머리 (얼굴) */
+  s.push(원(120,96,60,피부색));
+  /* 귀 */
+  s.push(원(63,108,9,피부색));
+  s.push(원(177,108,9,피부색));
+  /* 눈 */
+  s.push(원(99,132,9,"#463a4a"));
+  s.push(원(141,132,9,"#463a4a"));
+  s.push(원(102,129,3.4,"#fff"));
+  s.push(원(144,129,3.4,"#fff"));
+  /* 볼터치 */
+  s.push('<ellipse cx="86" cy="146" rx="8" ry="5" fill="#ffb6c1" opacity=".55"/>');
+  s.push('<ellipse cx="154" cy="146" rx="8" ry="5" fill="#ffb6c1" opacity=".55"/>');
+  /* 입 */
+  s.push('<path d="M108 152 Q120 161 132 152" stroke="#b3564a" stroke-width="4" fill="none" stroke-linecap="round"/>');
+
+  /* 8) 머리카락 앞 (둥근 반달 머리) */
+  s.push('<path d="M65.8 124 A61 61 0 1 1 174.2 124 Z" fill="'+머리색+'"/>');
+  /* 헤어스타일 추가: 곱슬은 위에 동그란 뿔 */
+  if(스타일===5){
+    s.push(원(90,54,17,머리색));
+    s.push(원(120,44,18,머리색));
+    s.push(원(150,54,17,머리색));
+  } else if(스타일===0){
+    s.push('<path d="M96 84 L96 70 M120 86 L120 70 M144 84 L144 70" stroke="rgba(255,255,255,.4)" stroke-width="5" stroke-linecap="round"/>');
+  }
+  /* 가르마 / 앞머리 라인 (장식처럼) */
+  if(스타일===2 || 스타일===1){
+    s.push('<path d="M120 36 C112 70 112 96 118 120" stroke="rgba(255,255,255,.35)" stroke-width="4" fill="none" stroke-linecap="round"/>');
+  }
+
+  /* 9) 얼굴 장식 */
+  if(얼굴.종류==="안경"){
+    s.push('<circle cx="99" cy="132" r="17" fill="none" stroke="'+얼굴.색+'" stroke-width="4"/>');
+    s.push('<circle cx="141" cy="132" r="17" fill="none" stroke="'+얼굴.색+'" stroke-width="4"/>');
+    s.push('<path d="M116 130 L124 130" stroke="'+얼굴.색+'" stroke-width="4"/>');
+    s.push('<path d="M82 128 L72 120" stroke="'+얼굴.색+'" stroke-width="4"/>');
+    s.push('<path d="M158 128 L168 120" stroke="'+얼굴.색+'" stroke-width="4"/>');
+  } else if(얼굴.종류==="왕관"){
+    var 왕관색 = 얼굴.색 || "#ffd54f";
+    s.push('<path d="M84 92 L78 42 L100 62 L120 36 L140 62 L162 42 L156 92 Z" fill="'+왕관색+'" stroke="rgba(60,40,0,.35)" stroke-width="3"/>');
+    s.push(원(120,84,8,"#ff5252"));
+    s.push(원(120,84,4,"#fff"));
+    s.push(원(92,76,5,"#fff"));
+    s.push(원(148,76,5,"#fff"));
+  } else if(얼굴.종류==="잎왕관"){
+    s.push(네모(88,108,64,10,5,"#66bb6a"));
+    s.push(잎(96,102,-35,"#81c784"));
+    s.push(잎(108,96,0,"#66bb6a"));
+    s.push(잎(120,92,10,"#81c784"));
+    s.push(잎(132,96,0,"#66bb6a"));
+    s.push(잎(144,102,35,"#81c784"));
+    s.push(원(120,112,5,"#ffd54f"));
+  } else if(얼굴.종류==="별"){
+    s.push(별그리기(88,96,9,"#ffd54f"));
+    s.push(별그리기(152,120,7,"#ffb74d"));
+    s.push(별그리기(120,52,6,"#fff9c4"));
+  } else if(얼굴.종류==="반짝"){
+    s.push(별그리기(96,118,6,"#81d4fa"));
+    s.push('<path d="M150 120 q0 -12 6 -18 q6 6 0 18 Z" fill="#4fc3f7"/>');
+    s.push('<path d="M158 92 q0 -10 5 -15 q5 5 0 15 Z" fill="#4fc3f7"/>');
+    s.push(원(146,124,2.6,"#fff"));
+    s.push(원(154,96,2.6,"#fff"));
+  } else if(얼굴.종류==="꽃"){
+    for(var i=0;i<5;i++){
+      var a = Math.PI*2/5*i - Math.PI/2;
+      s.push(원(84 + 8*Math.cos(a), 96 + 8*Math.sin(a), 7, "#ff8fb3"));
+    }
+    s.push(원(84,96,6,"#ffe082"));
+  } else if(얼굴.종류==="리본"){
+    s.push('<path d="M70 84 L84 72 L86 92 Z" fill="#ff6b9d"/>');
+    s.push('<path d="M70 84 L54 78 L60 94 Z" fill="#ff8fb3"/>');
+    s.push(원(70,84,6,"#ffd54f"));
+  }
+
+  return 헬퍼() + s.join("") + "</svg>";
+}
+
+function 그리기아바타(컨테이너, 크게){
+  if(!컨테이너) return;
+  컨테이너.innerHTML = 아바타SVG();
+}
+
+/* =====================================================================
+   옷방 (꾸미기)
+===================================================================== */
+var 현재옷탭 = "머리카락";
+var 소유에추가 = {};
+function 시작소유(){
+  카테고리순서.forEach(function(cat){
+    var list = 카탈로그[cat];
+    if(list && list.length) 상태.소유[list[0].id] = true;
+  });
+  저장하기();
+}
+function 이미소유(id){ return 상태.소유[id] === true; }
+function 아이템찾기(cat,id){
+  var list = 카탈로그[cat];
+  for(var i=0;i<list.length;i++) if(list[i].id===id) return list[i];
+  return null;
+}
+
+function 옷탭들그리기(){
+  var el = document.getElementById("옷탭줄");
+  if(!el) return;
+  el.innerHTML = "";
+  카테고리순서.forEach(function(cat){
+    var b = document.createElement("button");
+    b.className = "탭" + (cat===현재옷탭?" 골라":"");
+    b.textContent = 카테고리이름[cat];
+    b.setAttribute("data-옷탭", cat);
+    b.addEventListener("click", function(){ 현재옷탭 = cat; 옷탭열기(cat); });
+    el.appendChild(b);
+  });
+}
+function 옷탭열기(cat){
+  if(!cat) cat = 현재옷탭;
+  현재옷탭 = cat;
+  var tabs = document.querySelectorAll("[data-옷탭]");
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle("골라", tabs[i].getAttribute("data-옷탭")===cat);
+  var grid = document.getElementById("옷그리드");
+  if(!grid) return;
+  grid.innerHTML = "";
+  var list = 카탈로그[cat] || [];
+  if(!list.length){ grid.innerHTML = '<div class="빈칸말">아직 아이템이 없어요</div>'; return; }
+  var 입고 = 상태.착용[cat];
+  list.forEach(function(item){
+    var 카드 = document.createElement("button");
+    var 입고중 = item.id===입고;
+    var 소유중 = 이미소유(item.id);
+    var 살수있음 = 상태.보석 >= item.price ? true : false;
+    카드.className = "아이템" + (입고중?" 입고있다":"") + (!소유중&&!살수있음?" 못삼":"");
+    /* 미니 미리보기 칩 */
+    var 미니 = document.createElement("div");
+    미니.className = "미니";
+    if(cat==="피부"){ 미니.classList.add("피부칩"); 미니.style.background = item.색; }
+    else if(cat==="머리카락"){ 미니.classList.add("피부칩"); 미니.style.background = "linear-gradient(180deg,"+item.색+" 46%, #ffe9cf 46%)"; }
+    else if(cat==="상의" || cat==="하의" || cat==="신발" || cat==="허리장식" || cat==="등장식"){
+      미니.classList.add("이름칩");
+      미니.style.background = (cat==="상의"||cat==="하의") ? "linear-gradient(180deg,#fff,"+item.색+")" : "#f4f1ff";
+      if(cat==="상의") 미니.textContent = "👕";
+      else if(cat==="하의"){
+        if(item.종류==="치마"||item.종류==="주름치마") 미니.textContent = "👗";
+        else 미니.textContent = "👖";
+      }
+      else if(cat==="신발") 미니.textContent = "👟";
+      else if(cat==="허리장식"){
+        var 허리아이콘 = {벨트:"🎗️",별:"⭐",띠:"🎀",주머니:"👝",나비:"🎀",앞치마:"🍳"}[item.종류]||"🎀";
+        미니.textContent = (item.종류==="없음")?"❌":허리아이콘;
+      }
+      else {
+        var 등아이콘 = {날개:"🕊️",나비날개:"🦋",망토:"🧥",물통:"🍼",풍선:"🎈",가방:"🎒"}[item.종류]||"🎒";
+        미니.textContent = (item.종류==="없음")?"❌":등아이콘;
+      }
+      if(미니.textContent==="❌"){ 미니.textContent="—"; 미니.style.color="#bbb"; 미니.style.background="#fff"; 미니.style.border="2px dashed #ddd"; }
+    }
+    else {
+      미니.classList.add("이름칩");
+      var 얼굴아이콘 = {안경:"👓",왕관:"👑",잎왕관:"🍀",별:"✨",반짝:"💧",꽃:"🌸",리본:"🎀",없음:"—"}[item.종류]||"🎭";
+      if(item.종류==="없음"){ 미니.style.background="#f7f7f7"; 미니.style.border="2px dashed #ddd"; 미니.style.color="#aaa"; }
+      else { 미니.style.border="none"; 미니.style.background="#f4f1ff"; 미니.style.color="var(--본문)"; }
+      미니.textContent = 얼굴아이콘;
+    }
+    카드.appendChild(미니);
+    var 이름 = document.createElement("div");
+    이름.className = "품명";
+    이름.textContent = item.이름;
+    카드.appendChild(이름);
+    if(입고중){
+      var 입 = document.createElement("div"); 입.className="소유표시"; 입.textContent = "✔ 입고 있어요"; 카드.appendChild(입);
+    } else if(이미소유(item.id)){
+      var 착 = document.createElement("div"); 착.className="소유표시"; 착.textContent = "👆 눌러서 입기"; 카드.appendChild(착);
+    } else {
+      var 가 = document.createElement("div"); 가.className="가격";
+      가.innerHTML = '<span class="다이아">💎</span>'+item.가격;
+      if(item.가격===0) 가.textContent = "무료";
+      카드.appendChild(가);
+    }
+    카드.addEventListener("click", function(){
+      소리("클릭");
+      if(입고중) return;
+      if(이미소유(item.id) || item.가격===0){
+        if(item.가격===0 && !이미소유(item.id)) 상태.소유[item.id]=true;
+        상태.착용[cat] = item.id;
+        소리("정답");
+        그리기아바타(document.getElementById("아바타-큰"), true);
+        그리기아바타(document.getElementById("아바타-로비"), false);
+        저장하기();
+        옷탭열기(cat);
+      } else if(상태.보석 >= item.가격){
+        상태.보석 -= item.가격;
+        상태.소유[item.id] = true;
+        상태.착용[cat] = item.id;
+        소리("보석");
+        var r = document.getElementById("화면-옷방").getBoundingClientRect();
+        보석반짝(r.left + r.width/2, r.top + 120, "💎 -"+item.가격);
+        모두보석반영(); 갱신랭킹UI(); 저장하기();
+        그리기아바타(document.getElementById("아바타-큰"), true);
+        그리기아바타(document.getElementById("아바타-로비"), false);
+        옷탭열기(cat);
+      } else {
+        var r2 = document.getElementById("화면-옷방").getBoundingClientRect();
+        보석반짝(r2.left + r2.width/2, r2.top + 120, "보석이 부족해요!");
+        소리("오답");
+      }
+    });
+    grid.appendChild(카드);
+  });
+}
+
+/* =====================================================================
+   분리배출 게임
+===================================================================== */
+var 쓰레기모음 = [
+  {이름:"신문", 이모지:"📰", 정답:"종이", 이유:"신문은 종이로 분리해요! 깨끗한 종이는 다시 종이가 돼요."},
+  {이름:"종이상자", 이모지:"📦", 정답:"종이", 이유:"종이상자는 접어서 종이로 내놓아요."},
+  {이름:"페트병", 이모지:"🥤", 정답:"플라스틱", 이유:"페트병은 내용물을 비우고 뚜껑을 닫아 플라스틱으로!"},
+  {이름:"샴푸통", 이모지:"🧴", 정답:"플라스틱", 이유:"빈 샴푸통은 헹궈서 플라스틱으로 분리해요."},
+  {이름:"음료수캔", 이모지:"🥫", 정답:"캔·유리", 이유:"캔은 깨끗이 헹궈서 캔·유리로!"},
+  {이름:"유리병", 이모지:"🍾", 정답:"캔·유리", 이유:"유리병은 깨지지 않게 조심해서 캔·유리로 내놓아요."},
+  {이름:"사과껍질", 이모지:"🍎", 정답:"음식물", 이유:"음식 찌꺼기는 음식물 쓰레기예요."},
+  {이름:"남은 밥", 이모지:"🍚", 정답:"음식물", 이유:"남은 밥은 음식물 쓰레기로 버려요. 음식은 남기지 않는 게 최고!"},
+  {이름:"휴지", 이모지:"🧻", 정답:"일반쓰레기", 이유:"휴지는 물에 잘 풀려서 종이가 아니라 일반쓰레기예요!"},
+  {이름:"라면봉지", 이모지:"🍜", 정답:"일반쓰레기", 이유:"기름 묻은 봉지는 재활용이 안 돼서 일반쓰레기예요."}
+];
+var 통목록 = [
+  {이름:"종이", 이모지:"🗞️", 색:"#7eb8e8"},
+  {이름:"플라스틱", 이모지:"🧃", 색:"#ffd54f"},
+  {이름:"캔·유리", 이모지:"🥫", 색:"#90caf9"},
+  {이름:"음식물", 이모지:"🍂", 색:"#aed581"},
+  {이름:"일반쓰레기", 이모지:"🗑️", 색:"#b0bec5"}
+];
+var 분리진행 = [], 분리순서 = [], 분리인덱스 = 0, 분리점수값 = 0, 분리목숨 = 3, 분리멈춤 = false, 분리정답수 = 0;
+
+function 통뚜껑색(i){
+  var c = ["#ff6b6b","#4caf50","#ff9800","#2196f3","#9e9e9e"];
+  return c[i%c.length];
+}
+function 분리게임시작(){
+  분리인덱스 = 0; 분리점수값 = 0; 분리목숨 = 3; 분리정답수 = 0; 분리멈춤 = false;
+  /* 매 라운드: 카테고리별 1~2개 골라서 8문제 */
+  var 섞은카드 = 쓰레기모음.slice().sort(function(){return Math.random()-.5;});
+  분리순서 = 섞은카드.slice(0,8);
+  /* 통 그리기 */
+  var 바닥 = document.getElementById("분리통들");
+  바닥.innerHTML = "";
+  통목록.forEach(function(통, i){
+    var b = document.createElement("button");
+    b.className = "통";
+    b.setAttribute("data-통", 통.이름);
+    b.innerHTML = '<span class="뚜껑" style="background:'+통뚜껑색(i)+'"></span><span class="몸">'+통.이모지+'</span><span class="라벨">'+통.이름+'</span>';
+    b.addEventListener("click", function(){ 분리정답맞추기(통.이름, b); });
+    바닥.appendChild(b);
+  });
+  document.getElementById("분리끝말").classList.remove("보여");
+  document.getElementById("분리피드백").classList.remove("보여");
+  분리다음문제();
+  분리상태UI();
+}
+function 분리상태UI(){
+  var 하트 = "";
+  for(var i=0;i<3;i++) 하트 += (i<분리목숨)? "❤️" : "🤍";
+  document.getElementById("분리하트").textContent = 하트;
+  document.getElementById("분리점수").textContent = 분리점수값;
+}
+function 분리다음문제(){
+  if(분리인덱스 >= 분리순서.length){
+    분리끝();
+    return;
+  }
+  var 문제 = 분리순서[분리인덱스];
+  document.getElementById("분리이모지").textContent = 문제.이모지;
+  document.getElementById("분리이름").textContent = 문제.이름;
+  document.getElementById("분리피드백").classList.remove("보여");
+  분리상태UI();
+}
+function 분리정답맞추기(선택, 버튼){
+  if(분리멈춤) return;
+  분리멈춤 = true;
+  var 문제 = 분리순서[분리인덱스];
+  var 맞음 = 선택 === 문제.정답;
+  var 피드 = document.getElementById("분리피드백");
+  var 글 = document.getElementById("분리피드백글");
+  if(맞음){
+    분리점수값 += 10; 분리정답수++;
+    소리("정답");
+    글.textContent = "🎉 정답! " + 문제.이유;
+    피드.style.background = "rgba(220,248,210,.95)";
+    피드.classList.add("보여");
+    var 통 = 버튼; 통.classList.add("정답불");
+    setTimeout(function(){ 통.classList.remove("정답불"); }, 700);
+    /* 보석 반짝 */
+    var r = 버튼.getBoundingClientRect();
+    보석반짝(r.left + r.width/2, r.top, "💎 +5");
+  } else {
+    분리목숨--; 분리점수값 -= 0;
+    소리("오답");
+    글.textContent = "아쉬워요! " + 문제.이름 + "은(는) '" + 문제.정답 + "'예요. " + 문제.이유;
+    피드.style.background = "rgba(255,225,225,.95)";
+    피드.classList.add("보여");
+    버튼.classList.add("오답불");
+    var 맞는통 = document.querySelector('[data-통="'+문제.정답+'"]');
+    if(맞는통){ 맞는통.classList.add("정답불"); setTimeout(function(){ 맞는통.classList.remove("정답불"); }, 1100); }
+    setTimeout(function(){ 버튼.classList.remove("오답불"); }, 600);
+  }
+  document.getElementById("분리점수").textContent = 분리점수값;
+  분리상태UI();
+  setTimeout(function(){
+    if(분리목숨<=0){ 분리끝(); return; }
+    분리인덱스++;
+    분리멈춤 = false;
+    분리다음문제();
+  }, 맞음?1500:2000);
+}
+function 분리끝(){
+  분리멈춤 = true;
+  var 획득 = 분리정답수*5;
+  상태.보석 += 획득;
+  상태.분리최고 = Math.max(상태.분리최고||0, 분리점수값);
+  저장하기(); 모두보석반영(); 갱신랭킹UI();
+  var 이모지 = 분리정답수>=7 ? "🏆" : 분리정답수>=5 ? "🎖️" : "🌱";
+  document.getElementById("분리끝이모지").textContent = 이모지;
+  document.getElementById("분리끝타이틀").textContent =
+    분리정답수===8 ? "완벽해요! 분리배출 달인!" : 분리정답수>=5 ? "정말 잘했어요!" : "한 번 더 하면 더 잘할 수 있어요!";
+  document.getElementById("분리끝점수").innerHTML =
+    "맞힌 문제 " + 분리정답수 + "개 · 점수 <b>" + 분리점수값 + "</b>점<br>얻은 보석 💎 <b>+" + 획득 + "</b>";
+  document.getElementById("분리끝말").classList.add("보여");
+  소리("끝");
+}
+document.getElementById("분리다시").addEventListener("click", function(){ 소리("클릭"); 분리게임시작(); });
+
+/* =====================================================================
+   퀴즈
+===================================================================== */
+var 퀴즈문제 = [
+  {문항:"지구가 점점 더워지는 현상을 뭐라고 할까요?", 보기:["지구온난화","지구냉방","별뜨거워짐","날씨장난"], 정답:0, 해설:"지구의 온도가 올라가는 현상을 지구온난화라고 해요."},
+  {문항:"지구를 두껍게 덮어 열을 가둬 버리는 기체는?", 보기:["산소","헬륨","온실가스","수소"], 정답:2, 해설:"이산화탄소 같은 온실가스가 담요처럼 열을 가둬요."},
+  {문항:"석탄·석유·천연가스처럼 태우면 에너지가 나오는 것을 뭐라고 할까요?", 보기:["재생에너지","화석 연료","풍력 에너지","물에너지"], 정답:1, 해설:"화석 연료를 태울 때 이산화탄소가 많이 나와요. 그래서 화석 연료 사용을 줄여야 해요."},
+  {문항:"다음 중 이산화탄소(탄소)를 가장 많이 내보내는 것은?", 보기:["자전거 타기","석탄 화력발전소","나무 심기","손풍기 사용"], 정답:1, 해설:"석탄을 태워 전기를 만들면 탄소가 아주 많이 나와요. 그래서 태양·바람 같은 에너지가 중요해요."},
+  {문항:"나무가 우리에게 해 주는 고마운 일은?", 보기:["시끄럽게 함","탄소를 빨아들이고 공기 정화","물만 먹음","그늘만 만듦"], 정답:1, 해설:"나무는 광합성으로 이산화탄소를 먹고 맑은 산소를 내보내요. 나무를 지켜요!"},
+  {문항:"우리는 숨을 쉴 때 '이 기체'를 내보내요. 그런데 이 기체는 화석 연료를 태울 때도 많이 나와서, 지구의 열을 붙잡는 이름으로 불려요. 기체와 역할이 옳게 짝지어진 것은?", 보기:["산소 - 열을 밖으로 내보냄","이산화탄소 - 온실가스 역할","수소 - 바람을 만듦","헬륨 - 공기를 데움"], 정답:1, 해설:"이산화탄소는 대표적인 온실가스예요! 사람도 내쉬고, 화석 연료를 태울 때도 나와서 지구를 더 덥게 만들어요.", 보스:true},
+  {문항:"바닷물이 점점 따뜻해지면 어떤 일이 생길까요?", 보기:["물이 팽창해 해수면이 올라감","물이 점점 줄어듦","바다가 얼음으로 변함","파도가 사라짐"], 정답:0, 해설:"물은 따뜻해지면 부피가 커져요(열팽창). 거기에 빙하가 녹은 물까지 더해져 해수면이 올라가요."},
+  {문항:"다음 중 고갈되지 않고 계속 쓸 수 있는 에너지는?", 보기:["석유","석탄","태양 에너지","천연가스"], 정답:2, 해설:"태양 에너지는 햇빛이 있는 한 계속 쓸 수 있는 재생에너지예요. 석유·석탄은 언젠가 바닥이 나요."},
+  {문항:"내보내는 탄소만큼 다시 흡수해서 전체 탄소를 0으로 만드는 것을 뭐라고 할까요?", 보기:["탄소폭탄","탄소중립","산소중립","에너지충전"], 정답:1, 해설:"탄소중립은 '내보낸 만큼 다시 흡수한다'는 약속이에요. 나무 심기, 재생에너지 쓰기가 그 방법이에요."},
+  {문항:"탄소를 줄이려면 어떤 걸 타는 게 좋을까요?", 보기:["자가용","버스와 지하철","오토바이","비행기"], 정답:1, 해설:"여러 명이 함께 타는 대중교통은 한 사람당 탄소가 훨씬 적어요."},
+  {문항:"쓰레기를 분리배출하면 좋은 점은?", 보기:["그냥 재미","다시 자원으로 재활용","냄새만","버릴 곳 없음"], 정답:1, 해설:"바르게 나누면 쓰레기가 다시 새 물건이 돼요. 자원도 아끼고 지구도 지켜요."},
+  {문항:"지구를 지키는 가장 좋은 방법은 무엇일까요?", 보기:["하루만 크게 하기","남이 먼저 하기","작은 실천도 꾸준히 하기","기다리기"], 정답:2, 해설:"정답이에요! 작은 실천이 모이면 큰 변화가 돼요. 오늘부터 하나만 실천해 봐요. 💚"},
+  {문항:"일회용 컵 대신 무엇을 쓰면 좋을까요?", 보기:["내 텀블러(물통)","비닐봉지","일회용 숟가락","일회용 빨대"], 정답:0, 해설:"내 물통을 쓰면 쓰레기도 줄고, 물도 아낄 수 있어요."},
+  {문항:"지구의 대기(온실가스)가 만약 없다면, 지구의 밤 기온은 어떻게 될까요?", 보기:["밤에 매우 추워짐","밤에도 똑같이 따뜻함","계속 비가 옴","바다가 얼지 않음"], 정답:0, 해설:"온실가스는 밤에 지구의 열이 우주로 새지 않게 붙잡아 줘요. 그것이 없으면 열이 그대로 빠져나가 밤이 아주 추워져요.", 보스:true},
+  {문항:"다음 중 1kg의 이산화탄소를 만드는 데 가장 관련이 깊은 것은?", 보기:["친환경 전기차를 하루 이용하기","자가용으로 10km 운전하기","자전거로 10km 달리기","걸어서 10km 걷기"], 정답:1, 해설:"자가용은 휘발유를 태워 탄소를 내보내요. 걷기·자전거·전기차는 탄소가 훨씬 적어요.", 보스:true},
+  {문항:"바다거북의 코에 꽂혀 유명해진 일회용품은?", 보기:["플라스틱 빨대","나무젓가락","종이컵","쇼핑백"], 정답:0, 해설:"버려진 빨대가 바다동물을 아프게 해요. 빨대 없이 마시거나, 다시 쓰는 빨대를 써요!"},
+  {문항:"장을 볼 때 비닐봉지 대신 무엇을 쓰면 좋을까요?", 보기:["에코백(장바구니)","종이 여러 장","두꺼운 비닐","신문지"], 정답:0, 해설:"비닐봉지는 쓰고 버리면 쓰레기예요. 장바구니는 여러 번 쓸 수 있어요!"},
+  {문항:"학용품을 아끼는 방법으로 가장 좋은 것은?", 보기:["연필을 끝까지 사용하기","낙서를 많이 하기","쉽게 버리기","자주 새로 사기"], 정답:0, 해설:"물건을 오래 쓰면 그만큼 만들 때 쓰는 자원과 에너지가 줄어요."},
+  {문항:"기름이 묻은 종이 피자 상자는 어디에 버려야 할까요?", 보기:["종이","일반쓰레기","플라스틱","음식물"], 정답:1, 해설:"기름에 더러워진 종이는 재활용이 안 돼서 일반쓰레기예요."},
+  {문항:"음식을 남기면 무엇이 낭비될까요?", 보기:["음식만","만들 때 쓴 물·에너지·탄소까지","시간만","접시만"], 정답:1, 해설:"음식을 만들 때도 물과 에너지가 들어요. 남기지 않으면 그만큼 지구도 아껴져요."},
+  {문항:"햇빛을 이용해 전기를 만드는 것은?", 보기:["풍력발전","수력발전","태양광발전","화력발전"], 정답:2, 해설:"태양광발전은 햇빛으로 전기를 만들어요. 탄소가 거의 나오지 않아요."},
+  {문항:"바람을 이용해 전기를 만드는 것은?", 보기:["태양광발전","풍력발전","원자력발전","석탄발전"], 정답:1, 해설:"풍력발전은 바람의 힘으로 날개를 돌려 전기를 만들어요."},
+  {문항:"지구 평균 기온이 올라가는 가장 큰 사람의 원인은?", 보기:["화석 연료를 많이 태우기","나무를 많이 심기","걸어 다니기","전기를 아끼기"], 정답:0, 해설:"석탄·석유를 태우면 이산화탄소가 나와 지구가 더워져요."},
+  {문항:"미세먼지의 원인이 되는 것 중 하나는?", 보기:["자동차 배출가스","나무","빗물","바닷바람"], 정답:0, 해설:"차에서 나오는 매연이 미세먼지를 만들어요. 대중교통을 타면 도움이 돼요."},
+  {문항:"여름에 에어컨 온도는 몇 도쯤이 좋을까요?", 보기:["18도","26도쯤","10도","30도쯤"], 정답:1, 해설:"26도쯤으로 맞추면 시원하면서도 전기를 아껴요. 1도 낮추면 전기가 7% 더 들어요."},
+  {문항:"양치할 때 물을 아끼는 방법은?", 보기:["컵에 받아서 쓰기","수도꼭지 계속 틀기","샤워기로 씻기","물을 많이 받아 두기"], 정답:0, 해설:"양치하는 동안 수도꼭지를 틀어 두면 물이 낭비돼요. 컵에 받아 쓰면 물을 아껴요."},
+  {문항:"다음 중 재생에너지가 아닌 것은?", 보기:["태양 에너지","풍력 에너지","석탄","수력 에너지"], 정답:2, 해설:"석탄은 태우면 사라지는 화석 연료예요. 재생에너지는 자연에서 계속 얻을 수 있어요."},
+  {문항:"플라스틱 쓰레기를 줄이기 위해 꼭 필요한 것은?", 보기:["줄이고 다시 쓰고 재활용하기","더 많이 만들기","바다에 버리기","땅에 묻기"], 정답:0, 해설:"플라스틱은 잘 썩지 않아요. '줄이기-다시 쓰기-재활용'이 정답이에요."},
+  {문항:"숨 쉴 때 나오는 이산화탄소는 식물이 광합성으로 흡수해요. 그런데 요즘 대기 중 이산화탄소가 계속 늘어나는 까닭은?", 보기:["화석 연료를 태워 배출이 흡수보다 많아서","식물이 너무 많아져서","바다가 너무 커져서","사람이 숨을 덜 쉬어서"], 정답:0, 해설:"사람이 화석 연료를 태우면서 내보내는 양이 나무가 흡수하는 양보다 훨씬 많아요.", 보스:true},
+  {문항:"해수면이 올라가는 원인을 모두 고른 것은?  ㄱ. 바닷물이 따뜻해져 팽창함  ㄴ. 빙하와 빙산이 녹음  ㄷ. 바람이 불어옴", 보기:["ㄱ","ㄴ","ㄱ, ㄴ","ㄱ, ㄴ, ㄷ"], 정답:2, 해설:"따뜻해진 물은 부피가 커지고(열팽창), 녹은 빙하의 물이 바다로 흘러들어 해수면이 올라가요. 바람은 관계없어요.", 보스:true},
+  {문항:"물건을 만들고 운반하고 버릴 때까지 내보내는 탄소를 무엇이라고 할까요?", 보기:["탄소발자국","이산화탄소 요금","온실 티켓","에너지 포인트"], 정답:0, 해설:"탄소발자국! 물건 하나에도 탄소가 남겨져요. 새로 사기보다 고쳐 쓰면 발자국이 작아져요.", 보스:true}
+];
+var 퀴즈지금 = 0, 퀴즈맞은수 = 0, 퀴즈보스맞음 = 0, 퀴즈끝남 = false, 퀴즈누름 = false;
+
+function 퀴즈시작(){
+  퀴즈지금 = 0; 퀴즈맞은수 = 0; 퀴즈보스맞음 = 0; 퀴즈끝남 = false; 퀴즈누름 = false;
+  /* 매번 다른 문제: 큰 문제풀에서 무작위로 뽑는다 */
+  var 일반풀 = 퀴즈문제.filter(function(p){ return !p.보스; }).sort(function(){return Math.random()-.5;});
+  var 보스풀 = 퀴즈문제.filter(function(p){ return p.보스; }).sort(function(){return Math.random()-.5;});
+  var 선택일반 = 일반풀.slice(0, Math.min(12, 일반풀.length));
+  var 선택보스 = 보스풀.slice(0, Math.min(3, 보스풀.length));
+  var 총 = 선택일반.length + 선택보스.length;
+  /* 보스 문제를 중간중간(골고루) 배치 */
+  var 타겟 = [];
+  for(var k=0; k<선택보스.length; k++){
+    타겟.push(Math.round((k+1)*(총+1)/(선택보스.length+1))-1);
+  }
+  var 결과 = new Array(총), ni = 0;
+  for(var i=0;i<총;i++){
+    if(타겟.indexOf(i)>=0){ 결과[i] = 선택보스.shift(); }
+    else { 결과[i] = 선택일반[ni++]; }
+  }
+  window.퀴즈문제순서 = 결과;
+  document.getElementById("퀴즈끝말").classList.remove("보여");
+  document.getElementById("퀴즈몸체").style.display = "flex";
+  document.getElementById("퀴즈전체").textContent = 결과.length;
+  document.getElementById("퀴즈맞음").textContent = 0;
+  퀴즈문항보이기();
+}
+function 퀴즈문항보이기(){
+  var 문제 = window.퀴즈문제순서[퀴즈지금];
+  var 보스임 = !!문제.보스;
+  var 상자 = document.querySelector("#퀴즈몸체 .문항상자");
+  if(상자) 상자.classList.toggle("보스상자", 보스임);
+  document.getElementById("퀴즈현황").textContent = 보스임 ?
+    "👑 보스 문제! (어려운 문제)" :
+    "문제 " + (퀴즈지금+1) + " / " + window.퀴즈문제순서.length;
+  document.getElementById("퀴즈문항").textContent = 문제.문항;
+  document.getElementById("퀴즈해설").textContent = "정답을 골라 보세요!";
+  document.getElementById("퀴즈해설").style.color = "";
+  document.getElementById("퀴즈맞음").textContent = 퀴즈맞은수;
+  var 보 = document.getElementById("퀴즈보기들");
+  보.innerHTML = "";
+  문제.보기.forEach(function(텍, i){
+    var b = document.createElement("button");
+    b.className = "보기";
+    b.textContent = 텍;
+    b.setAttribute("data-보기인덱스", i);
+    b.addEventListener("click", function(){ 퀴즈답하기(i, b); });
+    보.appendChild(b);
+  });
+  퀴즈누름 = false;
+}
+function 퀴즈답하기(선택, 버튼){
+  if(퀴즈누름 || 퀴즈끝남) return;
+  퀴즈누름 = true;
+  var 문제 = window.퀴즈문제순서[퀴즈지금];
+  var 맞음 = 선택 === 문제.정답;
+  var buttons = document.querySelectorAll("#퀴즈보기들 .보기");
+  var 해설 = document.getElementById("퀴즈해설");
+  for(var i=0;i<buttons.length;i++){
+    buttons[i].style.pointerEvents = "none";
+    if(i===문제.정답) buttons[i].classList.add("정답불");
+    else if(i===선택) buttons[i].classList.add("오답불");
+  }
+  if(맞음){
+    var 보스임 = !!문제.보스;
+    퀴즈맞은수++;
+    if(보스임) 퀴즈보스맞음++;
+    소리("정답");
+    해설.textContent = (보스임 ? "👑 보스 격파! 정답! " : "🎉 정답! ") + 문제.해설;
+    해설.style.color = "#2e7d32";
+    var r = 버튼.getBoundingClientRect();
+    보석반짝(r.left+r.width/2, r.top, 보스임 ? "👑 보스! 💎 +20" : "💎 +10");
+  } else {
+    소리("오답");
+    해설.textContent = (문제.보스 ? "👑 보스 문제였어요! " : "💡 ") + 문제.해설;
+    해설.style.color = "#c62828";
+  }
+  document.getElementById("퀴즈맞음").textContent = 퀴즈맞은수;
+  setTimeout(function(){
+    퀴즈지금++;
+    if(퀴즈지금 >= window.퀴즈문제순서.length) 퀴즈끝();
+    else 퀴즈문항보이기();
+  }, 1700);
+}
+function 퀴즈끝(){
+  퀴즈끝남 = true;
+  var 전체 = window.퀴즈문제순서.length;
+  var 점수 = 퀴즈맞은수*10 + 퀴즈보스맞음*10;
+  var 획득 = 퀴즈맞은수*10 + 퀴즈보스맞음*10;
+  var 새최고 = false;
+  if(점수 > (상태.퀴즈최고||0)){ 상태.퀴즈최고 = 점수; 새최고 = true; }
+  상태.보석 += 획득;
+  저장하기(); 모두보석반영(); 갱신랭킹UI();
+  var 이모 = 퀴즈맞은수===전체 ? "🌟" : 퀴즈맞은수>=전체*0.75 ? "🎉" : "🌱";
+  document.getElementById("퀴즈끝이모지").textContent = 이모;
+  document.getElementById("퀴즈끝점수").innerHTML =
+    "맞힌 문제 <b>" + 퀴즈맞은수 + "</b>개 / " + 전체 + "개 (보스 격파 " + 퀴즈보스맞음 + "개)<br>점수 <b>" + 점수 + "</b>점 · 얻은 보석 💎 <b>+" + 획득 + "</b>";
+  document.getElementById("퀴즈끝최고").textContent = 새최고 ? "🎊 최고 점수를 갱신했어요!" : "최고 점수: " + 상태.퀴즈최고 + "점";
+  document.getElementById("퀴즈몸체").style.display = "none";
+  document.getElementById("퀴즈끝말").classList.add("보여");
+  소리("끝");
+}
+document.getElementById("퀴즈다시").addEventListener("click", function(){ 소리("클릭"); 퀴즈시작(); });
+
+/* =====================================================================
+   포스터 만들기 (캔버스)
+===================================================================== */
+var 포스터탭현재 = "만들기";
+var 캔버스 = document.getElementById("포스터캔버스");
+var ctx = 캔버스.getContext("2d");
+var 배경캔버스 = document.getElementById("포스터배경캔버스");
+var 배경ctx = 배경캔버스.getContext("2d");
+var 도구종류 = "붓";          /* 붓 / 지우개 / 도장 / 글 */
+var 현재색 = "#43a047";
+var 현재굵기 = 8;
+var 지우개굵기 = 52;
+var 스티커크기 = 92;
+var 글씨크기 = 76;
+var 현재도장 = "🌍";
+var 그리는중 = false;
+
+var 포스터배경들 = [
+  {이름:"잔디", 만드는법:function(c){ var g=c.createLinearGradient(0,0,0,720); g.addColorStop(0,"#c8f0ff"); g.addColorStop(.7,"#dff6c9"); g.addColorStop(1,"#9be07c"); return g; }},
+  {이름:"바다", 만드는법:function(c){ var g=c.createLinearGradient(0,0,0,720); g.addColorStop(0,"#aee9ff"); g.addColorStop(.6,"#6ec6ff"); g.addColorStop(1,"#3aa0e0"); return g; }},
+  {이름:"노을", 만드는법:function(c){ var g=c.createLinearGradient(0,0,0,720); g.addColorStop(0,"#ffe9a8"); g.addColorStop(.6,"#ffb37e"); g.addColorStop(1,"#ff8f9e"); return g; }},
+  {이름:"밤하늘", 만드는법:function(c){ var g=c.createLinearGradient(0,0,0,720); g.addColorStop(0,"#223a70"); g.addColorStop(1,"#6f5b9e"); return g; }},
+  {이름:"무지개", 만드는법:function(c){ return "#fff"; }}
+];
+function 포스터배경다시(){
+  배경ctx.clearRect(0,0,1080,720);
+  var 배경 = 포스터배경들[0];
+  배경ctx.fillStyle = 배경.만드는법(배경ctx);
+  배경ctx.fillRect(0,0,1080,720);
+  배경ctx.fillStyle = "#fff5c9"; 배경ctx.beginPath(); 배경ctx.arc(940,120,70,0,Math.PI*2); 배경ctx.fill();
+  배경ctx.fillStyle = "rgba(255,255,255,.5)";
+  for(var i=0;i<6;i++){
+    var x = 80+i*190, y = 120+((i*73)%120);
+    배경ctx.beginPath(); 배경ctx.arc(x,y,26,0,Math.PI*2); 배경ctx.fill();
+  }
+}
+function 도화지리셋(){
+  ctx.globalCompositeOperation = "source-over";
+  ctx.clearRect(0,0,1080,720);
+  되돌리기스택 = [];
+  되돌리기UI();
+  포스터배경다시();
+}
+function 합쳐진이미지(){
+  var c = document.createElement("canvas");
+  c.width = 1080; c.height = 720;
+  var x = c.getContext("2d");
+  x.drawImage(배경캔버스, 0, 0);
+  x.drawImage(캔버스, 0, 0);
+  return c.toDataURL("image/png");
+}
+
+/* ---------- 되돌리기 (그린 것만) ---------- */
+var 되돌리기스택 = [];
+var 되돌리기버튼 = document.getElementById("포스터되돌리기");
+function 되돌리기UI(){
+  if(!되돌리기버튼) return;
+  if(되돌리기스택.length) 되돌리기버튼.classList.remove("못씀");
+  else 되돌리기버튼.classList.add("못씀");
+}
+function 스냅샷넣기(){
+  if(되돌리기스택.length >= 12) 되돌리기스택.shift();
+  되돌리기스택.push(캔버스.toDataURL("image/png"));
+  되돌리기UI();
+}
+function 되돌리기실행(){
+  if(!되돌리기스택.length){
+    보석반짝(window.innerWidth/2, window.innerHeight/2 - 80, "되돌릴 게 없어요!");
+    소리("오답");
+    return;
+  }
+  var src = 되돌리기스택.pop();
+  var img = new Image();
+  img.onload = function(){
+    ctx.globalCompositeOperation = "source-over";
+    ctx.clearRect(0,0,1080,720);
+    ctx.drawImage(img,0,0);
+    되돌리기UI();
+    소리("클릭");
+  };
+  img.src = src;
+}
+document.getElementById("포스터되돌리기").addEventListener("click", 되돌리기실행);
+되돌리기UI();
+function 도장찍기(x,y,글){
+  ctx.font = Math.round(스티커크기) + "px 'Jua', sans-serif";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.globalAlpha = 0.92;
+  ctx.fillText(글, x, y);
+  ctx.globalAlpha = 1;
+}
+function 글씨적기(x,y,글){
+  ctx.font = "bold " + Math.round(글씨크기) + "px 'Jua', sans-serif";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.lineWidth = Math.max(8, Math.round(글씨크기/5));
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "rgba(255,255,255,.9)";
+  ctx.strokeText(글, x, y);
+  ctx.fillStyle = 현재색;
+  ctx.fillText(글, x, y);
+}
+function 크기슬라이더맞추기(){
+  var s = document.getElementById("크기슬라이더"), n = document.getElementById("크기숫자");
+  if(!s) return;
+  var v = 80;
+  if(도구종류==="도장") v = 스티커크기;
+  else if(도구종류==="글") v = 글씨크기;
+  else if(도구종류==="지우개") v = 지우개굵기;
+  else v = Math.max(24, Math.round(현재굵기/0.15));
+  if(v > 200) v = 200; if(v < 24) v = 24;
+  s.value = v;
+  var real = 도구종류;
+  if(real==="도장") n.textContent = Math.round(스티커크기);
+  else if(real==="글") n.textContent = Math.round(글씨크기);
+  else if(real==="지우개") n.textContent = Math.round(지우개굵기);
+  else n.textContent = 현재굵기;
+}
+document.getElementById("크기슬라이더").addEventListener("input", function(){
+  var v = Number(this.value);
+  if(도구종류==="도장"){ 스티커크기 = v; }
+  else if(도구종류==="글"){ 글씨크기 = v; }
+  else if(도구종류==="지우개"){ 지우개굵기 = v; }
+  else { 현재굵기 = Math.max(3, Math.round(v*0.15)); }
+  크기슬라이더맞추기();
+});
+크기슬라이더맞추기();
+function 캔버스좌표(e){
+  var r = 캔버스.getBoundingClientRect();
+  return { x:(e.clientX-r.left)*1080/r.width, y:(e.clientY-r.top)*720/r.height };
+}
+캔버스.addEventListener("pointerdown", function(e){
+  e.preventDefault();
+  캔버스.setPointerCapture && 캔버스.setPointerCapture(e.pointerId);
+  var p = 캔버스좌표(e);
+  if(도구종류==="붓" || 도구종류==="지우개"){
+    스냅샷넣기();
+    그리는중 = true;
+    ctx.globalCompositeOperation = (도구종류==="지우개") ? "destination-out" : "source-over";
+    ctx.beginPath(); ctx.moveTo(p.x,p.y);
+    ctx.strokeStyle = (도구종류==="지우개") ? "#000000" : 현재색;
+    ctx.fillStyle = (도구종류==="지우개") ? "#000000" : 현재색;
+    ctx.lineWidth = (도구종류==="지우개") ? 지우개굵기 : 현재굵기;
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.arc(p.x, p.y, ctx.lineWidth/2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+0.1,p.y+0.1); ctx.stroke();
+  }
+  else if(도구종류==="도장"){ 스냅샷넣기(); 도장찍기(p.x,p.y,현재도장); }
+  else if(도구종류==="글"){
+    var 글 = document.getElementById("글씨입력").value.trim();
+    if(글){ 스냅샷넣기(); 글씨적기(p.x,p.y,글); }
+  }
+});
+캔버스.addEventListener("pointermove", function(e){
+  if((도구종류!=="붓" && 도구종류!=="지우개") || !그리는중) return;
+  e.preventDefault();
+  var p = 캔버스좌표(e);
+  ctx.lineTo(p.x,p.y); ctx.stroke();
+});
+function 그리기끝(){
+  그리는중 = false;
+  ctx.globalCompositeOperation = "source-over";
+}
+캔버스.addEventListener("pointerup", 그리기끝);
+캔버스.addEventListener("pointerleave", 그리기끝);
+
+function 붓도구만들기(){
+  var el = document.getElementById("붓도구들");
+  el.innerHTML = "";
+  [["붓","🖌️"],["지우개","🧽"],["도장","🌳"],["글","🔤"]].forEach(function(t){
+    var b = document.createElement("button");
+    b.className = "작은도구" + (도구종류===t[0]?" 골라":"");
+    b.textContent = t[1];
+    b.addEventListener("click", function(){
+      도구종류 = t[0];
+      소리("클릭");
+      document.querySelectorAll("#붓도구들 .작은도구").forEach(function(x){ x.classList.remove("골라"); });
+      b.classList.add("골라");
+      크기슬라이더맞추기();
+    });
+    el.appendChild(b);
+  });
+}
+function 색만들기(){
+  var el = document.getElementById("색모음");
+  el.innerHTML = "";
+  var 색들 = ["#43a047","#1e88e5","#e53935","#fb8c00","#fdd835","#8e24aa","#00acc1","#ff6f9c","#5d4037","#795548","#ffffff","#000000"];
+  function 색고르기(색){
+    현재색 = 색; 소리("클릭");
+    if(도구종류!=="붓" && 도구종류!=="글"){ 도구종류 = "붓"; 붓도구만들기(); }
+    document.querySelectorAll("#색모음 .색점").forEach(function(x){ x.classList.remove("골라"); });
+    var same = document.querySelector('#색모음 .색점[data-색="'+색+'"]');
+    if(same) same.classList.add("골라");
+    크기슬라이더맞추기();
+  }
+  색들.forEach(function(색){
+    var b = document.createElement("button");
+    b.className = "색점" + (현재색===색?" 골라":"");
+    b.setAttribute("data-색", 색);
+    b.style.background = 색;
+    b.addEventListener("click", function(){ 색고르기(색); });
+    el.appendChild(b);
+  });
+  var pick = document.createElement("input");
+  pick.type = "color";
+  pick.className = "색점 컬러픽커";
+  pick.value = 현재색;
+  pick.title = "무지개 색 고르기";
+  pick.addEventListener("input", function(){ 현재색 = pick.value; });
+  pick.addEventListener("change", function(){
+    현재색 = pick.value;
+    if(도구종류!=="붓" && 도구종류!=="글"){ 도구종류 = "붓"; 붓도구만들기(); }
+    소리("클릭");
+    document.querySelectorAll("#색모음 .색점").forEach(function(x){ x.classList.remove("골라"); });
+    pick.classList.add("골라");
+    크기슬라이더맞추기();
+  });
+  el.appendChild(pick);
+}
+function 도장만들기(){
+  var el = document.getElementById("도장들");
+  el.innerHTML = "";
+  ["🌍","♻️","🐢","🐳","🌊","🐟","🌳","🌻","💧","🦋","🌿","☀️","🚲","🍃"].forEach(function(이){
+    var b = document.createElement("button");
+    b.className = "작은도구" + (현재도장===이?" 골라":"");
+    b.textContent = 이;
+    b.addEventListener("click", function(){
+      도구종류 = "도장"; 현재도장 = 이; 소리("클릭");
+      document.querySelectorAll("#도장들 .작은도구").forEach(function(x){ x.classList.remove("골라"); });
+      b.classList.add("골라");
+      document.querySelectorAll("#붓도구들 .작은도구").forEach(function(x){ x.classList.toggle("골라", x.textContent==="🌳"); });
+      크기슬라이더맞추기();
+    });
+    el.appendChild(b);
+  });
+}
+document.getElementById("포스터비우기").addEventListener("click", function(){
+  소리("클릭"); 도화지리셋();
+  보석반짝(window.innerWidth/2, window.innerHeight/2 - 80, "🗑️ 그림을 지웠어요! 새로 그려요 🎨");
+});
+document.getElementById("포스터저장").addEventListener("click", function(){
+  소리("보석");
+  var a = document.createElement("a");
+  a.href = 합쳐진이미지();
+  a.download = "내-포스터.png";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); }, 100);
+});
+document.getElementById("포스터전시하기").addEventListener("click", function(){
+  var src = 합쳐진이미지();
+  상태.전시 = 상태.전시 || [];
+  상태.전시.push({src:src, cap:"내가 만든 포스터"});
+  상태.보석 += 10;
+  저장하기(); 모두보석반영(); 갱신랭킹UI();
+  소리("끝");
+  도화지리셋();
+  전시그리드만들기();
+  포스터탭바꾸기("전시관");
+  보석반짝(window.innerWidth/2, window.innerHeight/2, "💎 +10 · 전시했어요!");
+});
+var 전시리셋대기 = false, 전시리셋타이머 = null;
+var 전시리셋버튼 = document.getElementById("전시리셋");
+if(전시리셋버튼){
+  전시리셋버튼.addEventListener("click", function(){
+    if(!(상태.전시||[]).length){ 보석반짝(window.innerWidth/2, window.innerHeight/2, "비울 전시물이 없어요!"); return; }
+    if(!전시리셋대기){
+      전시리셋대기 = true;
+      전시리셋버튼.classList.add("눌림");
+      전시리셋버튼.textContent = "⚠️ 정말 전부 비울까요? 한 번 더 눌러 주세요";
+      전시리셋타이머 = setTimeout(function(){ 전시리셋버튼.className = "둥근버튼 전시리셋버튼"; 전시리셋버튼.textContent = "🧹 전시물 전부 비우기"; 전시리셋대기 = false; }, 3000);
+      return;
+    }
+    clearTimeout(전시리셋타이머);
+    상태.전시 = [];
+    저장하기();
+    전시리셋버튼.className = "둥근버튼 전시리셋버튼";
+    전시리셋버튼.textContent = "🧹 전시물 전부 비우기";
+    전시리셋대기 = false;
+    전시그리드만들기();
+    소리("보석");
+    보석반짝(window.innerWidth/2, window.innerHeight/2, "깨끗하게 비웠어요! 🧹");
+  });
+}
+document.getElementById("전시새로만들기").addEventListener("click", function(){
+  소리("클릭");
+  포스터탭바꾸기("만들기");
+});
+function 전시그리드만들기(){
+  var grid = document.getElementById("전시그리드");
+  if(!grid) return;
+  grid.innerHTML = "";
+  /* AI 그림 (도우미가 만든 것) */
+  var ai작품 = [
+    {src:"assets/그림-1.jpg", cap:"AI가 그린 우리 캠페인 그림"},
+    {src:"assets/그림-2.jpg", cap:"AI가 그린 우리 캠페인 그림"},
+    {src:"assets/그림-3.jpg", cap:"AI가 그린 우리 캠페인 그림"}
+  ];
+  ai작품.forEach(function(작){
+    var 카드 = document.createElement("div"); 카드.className="전시카드";
+    var img = document.createElement("img"); img.src = 작.src; img.alt="전시 그림";
+    img.onerror = function(){ img.style.display="none"; };
+    var d = document.createElement("div"); d.className="설명"; d.textContent = "🖼️ " + 작.cap;
+    카드.appendChild(img); 카드.appendChild(d);
+    grid.appendChild(카드);
+  });
+  (상태.전시||[]).forEach(function(작){
+    var 카드 = document.createElement("div"); 카드.className="전시카드";
+    var img = document.createElement("img"); img.src = 작.src; img.alt="내 포스터";
+    var d = document.createElement("div"); d.className="설명"; d.textContent = "💚 " + (작.cap||"내가 만든 포스터");
+    var 지 = document.createElement("button"); 지.className="지우기"; 지.textContent="🗑️";
+    지.addEventListener("click", function(){
+      var arr = 상태.전시||[]; var idx = arr.indexOf(작);
+      if(idx>=0){ arr.splice(idx,1); 상태.전시 = arr; 저장하기(); }
+      카드.remove();
+    });
+    카드.appendChild(img); 카드.appendChild(d); 카드.appendChild(지);
+    grid.appendChild(카드);
+  });
+  if(!(상태.전시||[]).length){
+    var 안 = document.createElement("div"); 안.style.gridColumn="1/-1"; 안.className="우리말안내";
+    안.innerHTML = "여기가 우리 전시관이에요!<br>🖌️ <b>만들기</b>에서 그림을 그리고 <b>전시관에 올리기</b>를 누르면 이곳에 걸려요.<br>도우미에게 “포스터 만들어 줘”라고 말하면 AI가 그려 주는 그림도 여기에 걸 수 있어요!";
+    grid.appendChild(안);
+  }
+}
+function 포스터탭바꾸기(탭){
+  포스터탭현재 = 탭;
+  document.querySelectorAll("[data-포스터탭]").forEach(function(b){
+    b.classList.toggle("골라", b.getAttribute("data-포스터탭")===탭);
+  });
+  document.getElementById("포스터칸-만들기").style.display = 탭==="만들기" ? "flex" : "none";
+  document.getElementById("포스터칸-전시관").style.display = 탭==="전시관" ? "flex" : "none";
+  if(탭==="전시관") 전시그리드만들기();
+}
+document.querySelectorAll("[data-포스터탭]").forEach(function(b){
+  b.addEventListener("click", function(){ 소리("클릭"); 포스터탭바꾸기(b.getAttribute("data-포스터탭")); });
+});
+function 포스터열림(){
+  /* 캔버스 크기가 0 일 수 있어서 크기 맞춰 다시 그림 */
+  붓도구만들기(); 색만들기(); 도장만들기();
+  if(!상태._포스터배경그림){
+    상태._포스터배경그림 = true;
+    도화지리셋();
+  }
+  전시그리드만들기();
+  포스터탭바꾸기(포스터탭현재);
+}
+
+/* =====================================================================
+   학습 영상 (움직이는 영상)
+===================================================================== */
+var 영상목록 = [
+  {제목:"지구온난화, 뭐가 문제일까?", 이모지:"🔥", 실천:["지구가 점점 뜨거워져요","빙하가 녹고 바다가 높아져요","뜨거운 날씨가 계속 돼요"], 장면:[
+    {이모지:"🌍", 말:"우리 지구가 지금 아파요. 열이 식지 않고 쌓이고 있어요."},
+    {이모지:"🧊", 말:"빙하가 녹아서 바닷물이 점점 높아지고 있어요."},
+    {이모지:"🐻‍❄️", 말:"북극곰처럼 추운 곳에 사는 동물들의 집이 사라져요."},
+    {이모지:"🌡️", 말:"여름은 더 덥고, 겨울은 이상해졌어요."},
+    {이모지:"🌱", 말:"하지만! 우리가 바꿀 수 있어요. 함께 해요!"}
+  ]},
+  {제목:"온실가스와 탄소", 이모지:"💨", 실천:["이산화탄소가 대표 온실가스","전기·차·공장에서 많이 나와요","온실가스가 열을 담요처럼 가둬요"], 장면:[
+    {이모지:"🏭", 말:"차, 공장, 전기 만들 때 연기처럼 온실가스가 나와요."},
+    {이모지:"💨", 말:"이산화탄소가 많아질수록 지구는 더워져요."},
+    {이모지:"🧣", 말:"마치 두꺼운 담요로 지구를 덮은 것 같아요."},
+    {이모지:"🚌", 말:"온실가스를 줄이면 지구가 시원해져요!"}
+  ]},
+  {제목:"탄소를 줄이는 생활 습관", 이모지:"🚲", 실천:["버스·자전거 타기","전기 아껴 쓰기","물건 오래 쓰기"], 장면:[
+    {이모지:"🚌", 말:"가까운 곳은 걸어가거나 자전거·버스를 타요."},
+    {이모지:"💡", 말:"안 쓰는 전등과 전자기기는 꺼요."},
+    {이모지:"🍱", 말:"음식은 남기지 않고, 내 물통과 장바구니를 써요."},
+    {이모지:"♻️", 말:"쓰레기는 바르게 분리배출해요!"}
+  ]},
+  {제목:"오늘부터 실천하는 지구 사랑", 이모지:"💚", 실천:["물을 아껴 써요","양치할 때 물 잠그기","학용품 아껴 쓰기"], 장면:[
+    {이모지:"🚿", 말:"양치할 때는 물을 잠그고, 짧게 샤워해요."},
+    {이모지:"🌳", 말:"나무를 심고 가꾸는 건 최고의 지구 사랑!"},
+    {이모지:"💚", 말:"작은 실천이 모이면 지구가 웃어요."},
+    {이모지:"🤝", 말:"친구와 가족에게도 알려 줘요. 다 함께 지구 지킴이!"}
+  ]}
+];
+/* 진짜 뉴스 영상 (선생님·도우미가 고른 것) */
+var 뉴스목록 = [
+  {id:"PJ--v4TQDUg", 제목:"기후변화 임계점…온난화 늦춰주던 바다의 이상 신호", 방송:"SBS 뉴스"},
+  {id:"Nr-IH2Jv9xw", 제목:"슈퍼 엘니뇨 귀환? 1.7도 온난화도 위태롭다", 방송:"KBS 뉴스"},
+  {id:"BXzEcJAIWeU", 제목:"이제 2년도 남지 않았다…6차 대멸종은 진행 중", 방송:"비디오머그"},
+  {id:"mml5OWasjZI", 제목:"온난화 가속…1.5도 오르면 극한 기후 8.6배", 방송:"JTBC 뉴스"},
+  {id:"QcF_FMoDa6g", 제목:"이게 진짜 5년 뒤 미래? 심각한 이상 기후", 방송:"KBS"}
+];
+/* 과학 강의 */
+var 강의목록 = [
+  {id:"h4oOXPtkVEI", 제목:"[강의] 기후 위기 속 지구를 지키다 (기후환경 연구)", 방송:"서울시민대학"},
+  {id:"K16E_NgemHM", 제목:"우리가 정말 지구온난화의 범인일까?", 방송:"기후과학자 김백민 교수"},
+  {id:"qLXJlHoSz8w", 제목:"지구온난화의 주범은 인간? 태양? 과학 팩트", 방송:"김상욱 교수"},
+  {id:"BmadYeBpmDY", 제목:"지구의 위기, 지구 온난화!", 방송:"EBS 키즈"},
+  {id:"00Z6b2IMzXo", 제목:"지구가 뜨거워진다고? (과학동화)", 방송:"깨비키즈"}
+];
+var 영상번호 = 0, 영상장면idx = 0, 영상타이머 = null, 영상재생중 = false;
+var 비디오탭 = "우리";
+
+function 영상열림(){
+  영상탭고르기("우리");
+}
+function 영상탭고르기(tab){
+  비디오탭 = tab;
+  document.querySelectorAll("[data-비디오탭]").forEach(function(b){
+    b.classList.toggle("골라", b.getAttribute("data-비디오탭")===tab);
+  });
+  var 플우 = document.getElementById("플레이우리");
+  var 플실 = document.getElementById("플레이실");
+  if(tab==="우리"){
+    플우.style.display = "flex"; 플실.style.display = "none";
+    영상고르기(0);
+  } else {
+    영상멈춤();
+    플우.style.display = "none"; 플실.style.display = "flex";
+    실영상목록그리기(tab);
+  }
+}
+function 영상목록만들기(){
+  var el = document.getElementById("영상목록칸");
+  if(!el) return;
+  el.innerHTML = "";
+  if(비디오탭!=="우리") return;
+  영상목록.forEach(function(영, i){
+    var b = document.createElement("button");
+    b.className = "영상항목" + (i===영상번호?" 골라":"");
+    b.innerHTML = '<span class="v이모지">'+영.이모지+'</span><span><div class="v제목">'+영.제목+'</div><div class="v봤다">'+(상태.본영상.indexOf(i)>=0?"✅ 다 봤어요":"▶️ 눌러서 보기")+'</div></span>';
+    b.addEventListener("click", function(){ 소리("클릭"); 영상고르기(i); });
+    el.appendChild(b);
+  });
+}
+function 실영상목록그리기(tab){
+  var el = document.getElementById("영상목록칸");
+  el.innerHTML = "";
+  var 목록 = (tab==="뉴스") ? 뉴스목록 : 강의목록;
+  var 이모 = (tab==="뉴스") ? "📰" : "📚";
+  if(!목록.length){
+    var 안 = document.createElement("div");
+    안.className = "영상항목";
+    안.style.background = "#fff8e8";
+    안.style.borderColor = "#ffe4ad";
+    안.innerHTML = '<span class="v이모지">📚</span><span><div class="v제목">아직 과학 강의가 없어요</div><div class="v봤다">진짜 강의 유튜브 주소를 도우미에게 알려주시면 여기에 바로 추가해 드릴게요!</div></span>';
+    el.appendChild(안);
+    return;
+  }
+  목록.forEach(function(영){
+    var b = document.createElement("button");
+    b.className = "영상항목";
+    b.innerHTML = '<span class="v이모지">'+이모+'</span><span><div class="v제목">'+영.제목+'</div><div class="v봤다">'+영.방송+' · ▶️ 눌러서 재생</div></span>';
+    b.addEventListener("click", function(){ 소리("클릭"); 실영상재생(tab, 영); });
+    el.appendChild(b);
+  });
+}
+function 실영상재생(tab, 영){
+  var ifr = document.getElementById("실영상iframe");
+  if(ifr) ifr.src = "https://www.youtube.com/embed/" + 영.id + "?autoplay=1&rel=0";
+  var 이름 = document.getElementById("실영상이름");
+  if(이름){
+    이름.textContent = (tab==="뉴스" ? "📰 진짜 뉴스 · " : "📚 과학 강의 · ") + 영.제목 + " (" + 영.방송 + ")";
+  }
+  var 열쇠 = (tab==="뉴스" ? "뉴스" : "강의") + ":" + 영.id;
+  상태.본실영상 = 상태.본실영상 || [];
+  if(상태.본실영상.indexOf(열쇠) < 0){
+    상태.본실영상.push(열쇠);
+    상태.보석 += 5;
+    저장하기(); 모두보석반영(); 갱신랭킹UI();
+    보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "📺 영상 열기! 💎 +5");
+  }
+}
+function 영상고르기(i){
+  영상멈춤();
+  영상번호 = i;
+  영상장면idx = 0;
+  영상목록만들기();
+  영상재생중 = true;
+  영상재생();
+}
+function 영상재생(){
+  if(영상타이머) clearTimeout(영상타이머);
+  var 영 = 영상목록[영상번호];
+  var 장면 = 영.장면[영상장면idx];
+  if(장면){
+    document.getElementById("영상제목표시").textContent = "📺 " + 영.제목;
+    document.getElementById("영상이모지").textContent = 장면.이모지;
+    document.getElementById("영상말").textContent = 장면.말;
+    영상진행UI();
+    영상타이머 = setTimeout(function(){ 영상장면idx++; if(영상장면idx>=영.장면.length){ 영상다끝(); } else { 영상재생(); } }, 4200);
+  }
+  /* 실천 줄 */
+  var 실 = document.getElementById("영상실천");
+  실.innerHTML = "";
+  영.실천.forEach(function(t){
+    var c = document.createElement("span"); c.className="실천칩"; c.textContent = "💚 " + t;
+    실.appendChild(c);
+  });
+}
+function 영상진행UI(){
+  var 영 = 영상목록[영상번호];
+  document.getElementById("영상진행").style.width =
+    Math.round(영상장면idx/(영.장면.length)*100) + "%";
+  document.getElementById("영상계기").textContent = "장면 " + (영상장면idx+1) + " / " + 영.장면.length;
+}
+function 영상다끝(){
+  영상재생중 = false;
+  document.getElementById("영상진행").style.width = "100%";
+  document.getElementById("영상계기").textContent = "끝!";
+  document.getElementById("영상플레이").textContent = "🔁";
+  document.getElementById("영상말").textContent = "🎬 다 봤어요! 보석을 받았어요. (💎 +5)";
+  document.getElementById("영상이모지").textContent = "🎉";
+  if(상태.본영상.indexOf(영상번호) < 0){
+    상태.본영상.push(영상번호);
+    상태.보석 += 5;
+    저장하기(); 모두보석반영(); 갱신랭킹UI();
+    소리("끝");
+  }
+  영상목록만들기();
+}
+function 영상멈춤(){
+  영상재생중 = false;
+  if(영상타이머){ clearTimeout(영상타이머); 영상타이머 = null; }
+  document.getElementById("영상플레이").textContent = "▶️";
+}
+document.getElementById("영상플레이").addEventListener("click", function(){
+  var 영 = 영상목록[영상번호];
+  if(영상재생중){ 영상멈춤(); }
+  else {
+    영상재생중 = true;
+    document.getElementById("영상플레이").textContent = "⏸️";
+    if(영상장면idx >= 영.장면.length){ 영상장면idx = 0; }
+    if(document.getElementById("영상말").textContent.indexOf("다 봤어요")>=0){ 영상장면idx = 0; }
+    영상재생();
+  }
+});
+document.querySelectorAll("[data-비디오탭]").forEach(function(b){
+  b.addEventListener("click", function(){ 소리("클릭"); 영상탭고르기(b.getAttribute("data-비디오탭")); });
+});
+
+/* 글 도구 위임 (도구줄 안 작은 버튼) */
+document.addEventListener("click", function(e){
+  var d = e.target.closest ? e.target.closest("[data-도구]") : null;
+  if(!d) return;
+  var t = d.getAttribute("data-도구");
+  if(t==="붓" || t==="도장" || t==="글"){
+    도구종류 = t;
+    소리("클릭");
+    var 도구들 = document.querySelectorAll(".작은도구");
+    for(var i=0;i<도구들.length;i++) 도구들[i].classList.remove("골라");
+    d.classList.add("골라");
+    if(t==="도장"){
+      var 도장버튼 = document.querySelector('#붓도구들 .작은도구[data-도구="도장"]');
+      if(도장버튼) 도장버튼.classList.add("골라");
+    }
+    if(t==="글"){
+      var 글 = document.querySelector('#붓도구들 .작은도구[data-도구="글"]');
+      if(글) 글.classList.add("골라");
+    }
+    크기슬라이더맞추기();
+  }
+});
+document.getElementById("글씨입력").addEventListener("keydown", function(e){
+  if(e.key==="Enter"){
+    도구종류 = "글";
+    소리("클릭");
+    var 도구들2 = document.querySelectorAll(".작은도구");
+    for(var i=0;i<도구들2.length;i++) 도구들2[i].classList.remove("골라");
+    var 글버튼 = document.querySelector('[data-도구="글"]');
+    if(글버튼) 글버튼.classList.add("골라");
+    크기슬라이더맞추기();
+  }
+});
+
+/* =====================================================================
+   닉네임 (별명)
+===================================================================== */
+function 닉네임얻기(){ return (상태.닉네임||"").replace(/\s+/g,"") || "지구 지킴이"; }
+function 닉네임UI(){
+  var b = document.getElementById("닉네임열기");
+  if(b) b.innerHTML = "🐣 " + 닉네임얻기() + " ✏️";
+}
+document.getElementById("닉네임열기").addEventListener("click", function(){
+  소리("클릭");
+  document.getElementById("닉네임입력").value = 상태.닉네임 || "";
+  document.getElementById("닉네임모달").classList.add("보여");
+});
+document.getElementById("닉네임저장").addEventListener("click", function(){
+  var v = document.getElementById("닉네임입력").value.replace(/\s+/g,"");
+  if(v.length > 8) v = v.slice(0,8);
+  if(v && (v.indexOf("선생님")>=0 || v.indexOf("학생")>=0 || v.indexOf("이름")>=0)){ v=""; }
+  상태.닉네임 = v;
+  저장하기();
+  닉네임UI();
+  document.getElementById("닉네임모달").classList.remove("보여");
+  소리("정답");
+  보석반짝(window.innerWidth/2, window.innerHeight/2 - 100, "🐣 별명 완성!");
+});
+document.getElementById("닉네임닫기").addEventListener("click", function(){
+  document.getElementById("닉네임모달").classList.remove("보여");
+});
+
+/* =====================================================================
+   태양 이스터에그
+===================================================================== */
+var 태양실천 = [
+  "💡 안 쓰는 전등과 콘센트는 꺼요",
+  "🌬️ 에어컨 대신 선풍기와 그늘을 이용해요",
+  "🚶 가까운 곳은 걸어가거나 자전거를 타요",
+  "♻️ 쓰레기는 꼭 분리배출해요",
+  "🥗 음식은 남기지 않고 다 먹어요",
+  "💧 물을 아껴서 정수하는 에너지를 줄여요",
+  "🛍️ 물건을 오래 쓰고 새로 안 사요",
+  "🌳 나무를 심고 가꿔요"
+];
+document.getElementById("태양").addEventListener("click", function(){
+  소리("보석");
+  var 목 = document.getElementById("태양실천목록");
+  if(!목.children.length){
+    태양실천.forEach(function(문){
+      var d = document.createElement("div");
+      d.style.cssText = "background:#fff8e8;border:2px solid #ffe4ad;border-radius:16px;padding:10px 14px;font-size:19px;color:#6b4a12;line-height:1.4";
+      d.textContent = 문;
+      목.appendChild(d);
+    });
+  }
+  document.getElementById("태양모달").classList.add("보여");
+  if(!상태.태양본){
+    상태.태양본 = true;
+    상태.보석 += 3;
+    저장하기(); 모두보석반영(); 갱신랭킹UI();
+    보석반짝(window.innerWidth/2, window.innerHeight/2 - 130, "해님이 보석 3개 선물! 💎");
+  }
+});
+document.getElementById("태양닫기").addEventListener("click", function(){
+  document.getElementById("태양모달").classList.remove("보여");
+});
+
+/* =====================================================================
+   AI 지구친구 대화
+===================================================================== */
+var AI지식 = [
+  {k:["안녕","하이","헬로","반가워","방가","잘 지내"], a:"안녕, {닉}! 나는 지구를 지키는 AI 지구친구야 🌍 오늘은 뭐가 궁금해?"},
+  {k:["누구","정체","뭐하는","만든"], a:"나는 지구 지킴이 캠페인에서 환경을 알려 주는 AI 지구친구야! 🌱 여러분이 게임·퀴즈를 하면서 자연스럽게 지구를 지키는 법을 배우도록 돕고 있어."},
+  {k:["이름"], a:"내 이름은 '지구친구'! 넌 '" + 닉네임얻기() + "'라는 별명으로 활동 중이야. 😄"},
+  {k:["별명","닉네임"], a:"별명은 로비에서 캐릭터 위의 🐣 알을 눌러서 바꿀 수 있어! 진짜 이름 말고 멋진 별명으로~"},
+  {k:["지구온난화","더워","뜨거워","기후 변화","기후변화","온난화"], a:"지구온난화는 지구의 평균 기온이 올라가는 현상이야. 주범은 온실가스! 화석 연료를 태울 때 나오는 이산화탄소가 열을 가둬서 지구가 뜨거워져. 전기 아끼기, 대중교통 타기, 나무 심기가 해결책이야."},
+  {k:["온실","탄소","이산화"], a:"온실가스(이산화탄소·메테인 등)는 지구의 열이 우주로 새지 않게 붙잡아 줘. 그런데 너무 많아지면 지구가 사우나처럼 더워져! 배출을 줄이고, 나무처럼 흡수하는 걸 늘리는 '탄소중립'이 목표야."},
+  {k:["화석","석탄","석유","천연가스"], a:"석탄·석유·천연가스를 '화석 연료'라고 해. 태우면 에너지가 나오지만 이산화탄소도 함께 나와. 그래서 태양·바람 같은 재생에너지로 바꾸는 게 중요해!"},
+  {k:["재생","태양","바람","에너지","태양광","풍력"], a:"재생에너지는 자연에서 계속 얻는 에너지야. 태양광(햇빛), 풍력(바람), 수력(물)이 대표적이고 탄소가 거의 안 나와! 화석 연료와 달리 고갈되지 않아."},
+  {k:["전기","전등","에어컨","전자","콘센트","대기전력"], a:"전기를 아끼는 게 지구를 식히는 일이야! 안 쓰는 전등·TV 끄기, 에어컨은 26도쯤, 안 쓸 때 콘센트 뽑기. 이렇게 하면 발전소에서 나오는 탄소가 줄어."},
+  {k:["자전거","버스","지하철","걷","대중교통","자가용","차 "], a:"자가용 대신 걸어가기·자전거·대중교통을 이용하면 휘발유를 덜 태워서 탄소가 확 줄어! 버스 한 대에 사람이 많이 타면 더 효율적이야."},
+  {k:["물","샤워","양치","수돗물"], a:"물도 아껴야 해. 물을 정수하고 보내는 데 에너지가 들어가니까! 양치할 땐 컵에 받아 쓰고, 샤워를 1분 줄이면 페트병 10개 분량의 물을 아껴."},
+  {k:["음식","밥","남기","급식","먹을"], a:"음식을 남기면 음식 자체뿐 아니라, 만들 때 쓴 물·에너지·탄소까지 낭비되는 거야. '내 입에 맞을 만큼만' 받아서 남기지 않는 습관을 가져 봐!"},
+  {k:["빨대","비닐","장바구니","에코백","텀블러","일회용","컵"], a:"일회용품은 짧게 쓰고 버려져서 쓰레기가 돼. 텀블러·장바구니·다시 쓰는 빨대를 쓰면 플라스틱 쓰레기가 크게 줄어! 바다거북이 빨대 때문에 아파했던 일, 기억나지?"},
+  {k:["플라스틱","페트병","병"], a:"플라스틱은 자연에서 수백 년 동안 썩지 않아. 쓰레기 3R이 정답이야! Reduce(줄이기) Reuse(다시 쓰기) Recycle(재활용). 페트병은 내용물을 비우고 뚜껑을 닫아 분리배출해 줘."},
+  {k:["재활용","분리","쓰레기","캔","유리","종이","버려"], a:"분리배출 3단계! 1) 내용물 비우고 헹구기 2) 종이·플라스틱·캔·유리로 나누기 3) 기름 묻은 봉지·휴지는 일반쓰레기. 깨끗하게 나누면 다시 자원이 돼!"},
+  {k:["동물","바다","거북","북극","고래","물고기","새"], a:"버려진 플라스틱과 쓰레기가 바다 동물을 아프게 해. 쓰레기를 잘 분리하고 일회용품을 줄이면 바다 친구들이 살아날 수 있어! 🐢🐳🦈"},
+  {k:["나무","숲","식물","심","정원"], a:"나무는 광합성으로 이산화탄소를 흡수하고 산소를 내보내는 지구의 슈퍼히어로야! 나무를 심고 가꾸는 일이 탄소를 줄이는 가장 확실한 방법 중 하나야."},
+  {k:["미세","공기","대기","숨쉬기"], a:"자동차 매연과 공장 연기가 미세먼지와 대기오염을 만들어. 대중교통 타기, 나무 심기, 쓰레기 태우지 않기가 공기를 맑게 해!"},
+  {k:["날씨","이상","폭염","가뭄","홍수","빙하","해수면","북극"], a:"지구가 더워지면 이상 기온·폭염·가뭄·홍수가 잦아지고, 빙하가 녹아 해수면이 올라가. 바닷물은 따뜻해지면 부피도 커져(열팽창)! 그래서 지금 행동해야 해."},
+  {k:["탄소중립","중립","2050"], a:"탄소중립은 '내보낸 탄소만큼 다시 흡수해 전체를 0으로' 만드는 약속이야. 재생에너지, 나무 심기, 물건 고쳐 쓰기로 실천할 수 있어!"},
+  {k:["퀴즈","보스","문제"], a:"지구 퀴즈는 이제 문제가 아주 많아서 매번 다른 문제가 나와! 15문제 중 중간에 👑 보스 문제 3개가 섞여 나오고, 보스를 맞히면 보석이 2배(+20)야. 어디 한번 도전해 봐!"},
+  {k:["포스터","그림","전시","색","붓","지우개"], a:"포스터 만들기에서 붓으로 그리고, 지우개로 고치고, 크기 바 로 글씨·스티커를 키울 수 있어! 완성하면 🖼️ 전시관에 올리기로 걸고 보석 +10을 받아."},
+  {k:["게임","분리배출 게임","놀자","심심","재미","스테이지"], a:"같이 놀자! ♻️ 분리배출 게임은 쓰레기를 올바른 통에 넣는 게임이야. 맞힐 때마다 보석 +5! 로비로 가서 해 봐~ 🎮"},
+  {k:["보석","캐릭터","꾸미","옷","머리"], a:"보석은 게임·퀴즈·포스터·영상·해님 이스터에그로 모아! ✨ '내 캐릭터 꾸미기'에서 머리·옷·날개·허리 장식까지 멋지게 입혀 봐."},
+  {k:["영상","배우","동영상","보고 싶어"], a:"학습 영상은 4가지! 지구온난화, 온실가스·탄소, 생활 습관, 실천 약속이야. 하나를 끝까지 보면 보석 +5를 줘!"},
+  {k:["해님","태양","이스터","숨은","비밀"], a:"오! 화면 오른쪽 위 해님을 눌러 봤어? 🌞 그게 이스터에그야! 탄소를 줄이는 실천법 8가지가 나오고, 처음엔 보석도 줘."},
+  {k:["고마","사랑","멋져","최고","잘했"], a:"고마워, {닉}! 너 같은 지구 지킴이가 있어서 지구가 분명 기뻐할 거야. 💚"},
+  {k:["울고","슬프","속상","무서","힘들"], a:"괜찮아, {닉}! 환경 이야기가 슬플 수 있어. 하지만 우리가 하나씩 실천하면 꼭 좋아져. 너는 이미 멋진 지킴이니까 힘내! 💪"},
+  {k:["뭐해","지금","그래","그럼","웃"], a:"나는 여기서 네 질문을 기다리고 있어! 지구·환경·캠페인에 대해 뭐든 물어봐~ 😊"},
+  {k:["잘가","안녕히","바이","끝"], a:"다음에 또 놀자, {닉}! 오늘도 작은 실천 하나 잊지 마. 지구가 웃고 있을 거야! 👋💚"}
+];
+AI지식 = AI지식.concat([
+  {k:["지구온난화와","차이","온난화랑","기후변화와"], a:"기후변화는 지구온난화를 포함하는 더 큰 개념이야. 지구온난화(평균 기온 상승)가 일어나면 비·태풍·가뭄 같은 날씨 패턴까지 바뀌는 게 바로 기후변화야!"},
+  {k:["메테인","메탄"], a:"메탄(메테인)은 이산화탄소보다 온실 효과가 80배 이상 강한 기체야! 소·양 같은 가축의 트림, 논, 쓰레기 매립지에서 나와. 그래서 음식물 쓰레기 줄이기와 채식도 지구를 도와줘."},
+  {k:["아산화질소","질소"], a:"아산화질소도 강한 온실가스야. 농사에 쓰는 비료가 과하면 땅에서 아산화질소가 나와. 비료를 알맞게 쓰는 게 중요해."},
+  {k:["프레온","냉매","냉장고"], a:"냉장고·에어컨의 냉매(프레온 등)는 온실 효과가 아주 강해. 오래된 냉장고를 버릴 때는 제대로 처리해야 하고, 새 제품은 친환경 냉매를 쓰는 게 좋아."},
+  {k:["온실효과","담요"], a:"온실효과는 지구의 열을 붙잡아 주는 자연 현상이야. 온실가스가 적당하면 지구가 따뜻하게 유지되지만, 너무 많으면 사우나처럼 더워져! 문제는 '너무 많은 것'이야."},
+  {k:["탄소순환","순환"], a:"탄소는 숨 쉴 때(이산화탄소), 식물의 광합성, 바다, 화석 연료 사이를 계속 돌아다녀. 이걸 탄소 순환이라고 해. 그런데 사람이 화석 연료를 태워 순환 속도보다 훨씬 빨리 탄소를 꺼내 쓰고 있어."},
+  {k:["넷제로","흡수"], a:"넷제로는 탄소중립과 비슷해. '내보낸 탄소 - 없앤(흡수한) 탄소 = 0'이 되는 상태야. 나무 심기와 재생에너지로 실천할 수 있어."},
+  {k:["탄소발자국","발자국"], a:"탄소발자국은 내가 쓰는 물건·음식이 만들어지고 운반되고 버려질 때까지 남기는 탄소의 양이야. 물건을 오래 쓰고, 가까운 곳에서 나온 음식을 먹으면 발자국이 작아져."},
+  {k:["화석","석탄","석유","천연가스","연료"], a:"석탄·석유·천연가스는 수백만 년 전 생물이 땅속에서 변해서 된 거야. 태우면 에너지가 나오지만 이산화탄소가 나와. 그래서 '재생에너지 전환'이 중요해!"},
+  {k:["수소","수소에너지"], a:"수소는 태우면 물만 나오는 청정 연료야! 자동차나 발전에 쓰면 탄소가 거의 안 나와. 다만 수소를 만드는 과정에서도 에너지가 필요해서, 친환경 수소(그린수소)를 만드는 게 숙제야."},
+  {k:["바이오","폐기물","쓰레기 에너지"], a:"바이오에너지는 나무·음식물 같은 생물 유래 재료로 만드는 에너지야. 재생에너지이지만, 태울 때 탄소가 나올 수 있어서 '남은 것만' 쓰는 게 중요해."},
+  {k:["원자력","원전"], a:"원자력은 탄소는 거의 안 내지만, 방사성 폐기물 처리와 사고 위험이 남는 에너지야. 그래서 나라마다 찬반 논쟁이 있어. 어린이인 우리가 기억할 건 '어떤 에너지든 아껴 쓰는 게 최고'라는 거야."},
+  {k:["전기차","하이브리드","친환경차"], a:"전기차는 달릴 때 배출가스가 없어! 하지만 전기를 만드는 과정에서 탄소가 나올 수 있어서, '태양광 전기로 충전하는 전기차'일 때 정말 친환경이야. 우리나라는 2030년까지 전기차를 많이 늘릴 계획이야."},
+  {k:["자전거","걷기","대중교통"], a:"이동할 때 탄소가 가장 적은 순서: 걷기·자전거 < 버스·지하철 < 전기차 < 자가용 < 비행기. 가까운 거리는 걸어가고, 먼 거리는 함께 타는 게 지구를 시원하게 해!"},
+  {k:["냉장고","전자제품","전자기기"], a:"냉장고는 문을 오래 열지 말고, 뜨거운 음식은 식혀서 넣어. 전자기기는 안 쓸 때 코드를 뽑으면 '대기전력'을 아껴. TV·컴퓨터도 안 볼 땐 꺼 줘!"},
+  {k:["LED","전구","형광등"], a:"LED 전구는 형광등보다 전기를 80% 이상 덜 써! 오래 쓰고 밝기도 좋아. 집의 전구를 LED로 바꾸는 것만으로도 탄소가 크게 줄어."},
+  {k:["여름","에어컨","선풍기"], a:"여름엔 에어컨을 26도쯤에 맞추고 선풍기랑 같이 써. 에어컨 온도를 1도 낮추면 전기가 약 7% 더 들어가! 커튼으로 햇빛을 막아도 시원해져."},
+  {k:["겨울","난방","보일러"], a:"겨울엔 보일러를 20도 안팎으로 맞추고, 옷을 따뜻하게 입는 게 좋아. 문틈 바람막이만 해도 난방 열이 새는 걸 막아 에너지를 아껴."},
+  {k:["물 부족","가뭄","물낭비"], a:"지구 물 중 우리가 쓸 수 있는 민물은 3%도 안 돼. 게다가 기후변화로 가뭄이 잦아지고 있어. 양치할 때 컵 쓰기, 짧은 샤워, 빗물 모으기가 물을 지키는 방법이야."},
+  {k:["음식물쓰레기","음식 남기"], a:"우리나라에서 버려지는 음식물쓰레기가 하루에 수천 톤이야! 버려진 음식은 썩으면서 메탄가스를 내. '내가 먹을 만큼만' 받고 남기지 않는 게 지구를 가장 빠르게 돕는 일이야."},
+  {k:["채식","고기","육식","소"], a:"고기를 많이 먹으면 그만큼 사료·물·땅이 필요하고, 소는 메탄가스를 내. 꼭 채식할 필요는 없지만, '고기 없는 날(고기 대신 채소 하루)'을 실천하면 탄소가 줄어! 좋아하는 음식도 지구를 위해 조금씩 바꿔 봐."},
+  {k:["로컬","푸드","먹거리"], a:"먹거리가 먼 나라에서 비행기·배로 오면 운송할 때 탄소가 나와. 이걸 '푸드마일리지'라고 해. 제철 음식, 우리 동네에서 난 음식을 먹으면 탄소가 적게 나와."},
+  {k:["플라스틱","미세플라스틱","마이크로"], a:"플라스틱은 잘 썩지 않고, 잘게 부서져 '미세플라스틱'이 돼. 미세플라스틱은 바다 물고기·소금·물에서도 발견되고 있어. 일회용품 줄이기, 물병 대신 텀블러가 중요해!"},
+  {k:["페트병","뚜껑","라벨"], a:"페트병 분리배출 tip! 내용물을 비우고, 라벨은 떼고, 뚜껑은 닫아서 버려. 뚜껑을 닫아야 압축할 때 깨끗하게 재활용돼. 깨끗한 페트병은 다시 옷·이불이 되기도 해!"},
+  {k:["비닐","봉지","랩"], a:"깨끗한 비닐은 '비닐류'로 모아 버려야 해. 하지만 기름이 묻은 비닐·랩은 재활용이 안 돼서 일반쓰레기야. 장바구니를 쓰면 비닐 자체를 줄일 수 있어."},
+  {k:["스티로폼","포장"], a:"깨끗한 스티로폼은 재활용할 수 있어. 대신 음식물이 묻거나 더러우면 일반쓰레기야. 택배 상자·포장재는 줄이거나 다시 쓰는 게 좋아."},
+  {k:["유리","병"], a:"유리병은 깨끗이 씻어서 버리면 무한히 재활용돼! 색깔(투명·갈색·초록)별로 나눠서 버리는 곳도 있어. 유리는 재활용해도 품질이 안 떨어져."},
+  {k:["캔","알루미늄","깡통"], a:"음료수 캔은 물로 헹궈서 버리면 100% 가까이 재활용돼. 알루미늄 캔을 다시 만들면 새로 만드는 것보다 에너지가 95% 적게 들어!"},
+  {k:["종이","책","박스"], a:"종이는 깨끗하고 마른 상태로 접어서 버려. 종이를 1톤 재활용하면 나무 17그루를 살린다고 해! 기름 묻은 종이·영수증은 일반쓰레기야."},
+  {k:["음식물 버리는 곳","음식물쓰레기 분리"], a:"음식물은 전용 음식물 쓰레기통에 버려. 뼈·조개껍질·양파 껍질처럼 단단한 건 일반쓰레기로! 헷갈릴 땐 지역 안내를 확인해 봐."},
+  {k:["일반쓰레기","어디","안 되는 것"], a:"더러운 비닐·기름 묻은 종이·휴지·기저귀·깨진 유리는 일반쓰레기야. 재활용이 '안 되는 것'을 잘 구분하면 처리장에서 고생을 덜 해."},
+  {k:["쓰레기섬","북태평양","바다쓰레기"], a:"북태평양에는 플라스틱이 모여 만든 '쓰레기 섬'(대형 쓰레기 지대)이 있어. 땅 면적보다도 넓다고 해! 이건 우리가 버린 플라스틱이 바다로 흘러가서 생긴 거야."},
+  {k:["해양산성화","산성","조개"], a:"바다가 이산화탄소를 많이 흡수하면 물이 산성으로 변해(해양 산성화). 그러면 조개·산호가 껍질을 만들지 못해. 바다 생태계 전체가 위험해져."},
+  {k:["빙하","영구동토","북극곰"], a:"빙하가 녹으면 북극곰 같은 동물의 집이 사라지고, 땅속 얼음(영구동토)이 녹으면 메탄가스가 나와 온난화가 더 심해져. 이걸 '되먹임 효과'라고 해."},
+  {k:["엘니뇨","라니냐","해류"], a:"엘니뇨는 바닷물이 평소보다 뜨거워지는 현상, 라니냐는 반대로 차가워지는 현상이야. 이게 날씨를 크게 바꿔서 홍수·가뭄·폭염을 만들 수 있어. 기후변화로 더 자주 세게 온대."},
+  {k:["폭염","더위","온열"], a:"폭염이 심해지는 건 지구온난화 때문이야. 땅·바다가 열을 머금어 밤에도 안 식지 않아. 에어컨은 26도, 물 자주 마시기, 밖에선 그늘에서 쉬기! 그리고 전기를 아껴서 발전소 탄소를 줄이는 것도 도움이 돼."},
+  {k:["홍수","집중호우","장마"], a:"따뜻해진 공기는 더 많은 수증기를 머금어, 비가 한꺼번에 많이 내려. 그래서 집중호우·홍수가 잦아졌어. 빗물을 땅에 스며들게 하는 '빗물 정원', 하천 살리기가 해결책이야."},
+  {k:["생물다양성","멸종","동물 사라져"], a:"지구에서는 지금 여섯 번째 대멸종이 진행 중이라는 과학자들이 있어. 동물이 사라지면 먹이사슬이 끊기고 생태계가 무너져. 서식지 보호와 환경 보호가 생물을 지켜!"},
+  {k:["광합성","산소","이산화탄소 흡수"], a:"광합성: 식물이 햇빛을 이용해 이산화탄소와 물로 영양분을 만들고 산소를 내보내는 과정이야. 즉 나무 한 그루가 공기 정화기 역할을 하는 거지!"},
+  {k:["파리협정","COP","국제","약속"], a:"세계 나라들이 모여 기후변화에 대응하기로 한 약속이 '파리협정'(2015)이야. 목표는 지구 온도 상승을 1.5도 안쪽으로 막는 것. 매년 COP(기후총회)에서 이행을 점검해."},
+  {k:["2050","탄소중립 목표","우리나라"], a:"우리나라도 2050년까지 탄소중립을 목표로 해. 2030년까지 탄소 배출을 2018년보다 40% 줄이는 계획이야. 우리의 작은 실천도 이 목표에 한 몫을 해!"},
+  {k:["CCUS","포집","이산화탄소 저장"], a:"CCUS는 발전소·공장에서 나오는 이산화탄소를 잡아서(포집) 땅속에 저장하는 기술이야. 아직 비싸서 '배출을 줄이는 게 최우선'이라는 게 과학자들의 말이야."},
+  {k:["재활용 vs 다시쓰기","업사이클"], a:"업사이클은 버려진 물건에 새 가치를 더해 더 좋은 물건으로 만드는 거야! 예) 폐현수막 → 가방. '줄이기 > 다시 쓰기 > 재활용' 순서로 생각하는 게 중요해."},
+  {k:["순환경제","순환"], a:"순환경제는 '만들고-쓰고-버리는' 대신, 물건을 오래 쓰고 고쳐 쓰고 다시 자원으로 돌리는 경제를 말해. 지금처럼 자원을 마구 쓰는 건 '선형경제'고, 지구는 그걸 견디기 힘들어."},
+  {k:["재생 종이","화장지","휴지"], a:"휴지·화장지는 물에 잘 풀리도록 섬유가 짧아서 재활용이 안 돼. 일반쓰레기로 버려야 해! 대신 손수건을 쓰면 휴지 자체를 줄일 수 있어."},
+  {k:["영수증","코팅","감열지"], a:"영수증은 코팅된 종이라 재활용이 안 돼 일반쓰레기야. 전자 영수증이나 문자 영수증을 쓰면 종이 낭비를 줄일 수 있어."},
+  {k:["빗물","빗물받이","텃밭"], a:"빗물을 모아 화분·텃밭에 주면 수돗물을 아껴! 큰 건물의 빗물 저장소는 가뭄 때도 물을 쓸 수 있게 해줘."},
+  {k:["숲","산불","소나무"], a:"산불은 숲을 태우면서 엄청난 탄소를 내보내. 불씨 조심! 숲이 불탄 뒤엔 나무를 다시 심어 회복하는 데 수십 년이 걸려. 숲을 지키는 건 탄소를 지키는 일이야."},
+  {k:["습지","갯벌","해초"], a:"갯벌·습지·해초 숲은 '블루카본'이라고 불러. 이곳은 탄소를 아주 오래 저장하는 곳이라 '바다의 탄소 저장고'야. 갯벌을 메우지 않고 보호해야 해."},
+  {k:["도시","공원","그늘"], a:"도시에 공원과 나무가 많으면 여름 더위(열섬 현상)가 줄어들어. 학교 운동장과 옥상에 나무·텃밭을 만드는 '그린 인프라'가 미래 도시의 해답이야."},
+  {k:["전기 만드는 곳","발전소","전력"], a:"우리나라 전기의 상당 부분은 석탄·천연가스 발전소에서 나와. 그래서 전기를 아끼는 것이 곧 탄소를 줄이는 일이야. 태양광 패널을 설치한 집이 늘고 있어."},
+  {k:["스마트","태양광 패널","재생 전기"], a:"태양광 패널은 햇빛이 쬐면 전기를 만들어. 요즘은 지붕·주차장·논 위에도 설치해. 밤이나 흐린 날엔 못 쓰니 저장 기술(배터리)도 함께 발전 중이야."},
+  {k:["해양 에너지","파도","조력","바다 에너지"], a:"바다에도 에너지가 있어! 파도의 힘(파력), 밀물·썰물(조력), 수온 차이(온도차)로 전기를 만들 수 있어. 아직 비싸지만 미래의 재생에너지 후보야."},
+  {k:["얼마나 더워","평균 기온","온도 상승","1.5도"], a:"산업화 이전보다 지구 평균 기온이 1.1도쯤 올랐어. 과학자들은 1.5도가 넘으면 위험이 커진다고 경고해. '1.5도'는 단순한 숫자가 아니라 지구의 안전선이야."},
+  {k:["체감","확실","증거","심각"], a:"온난화의 증거는 이미 많아: 빙하가 줄고, 해수면이 오르고, 폭염·산불·홍수가 잦아지고, 북극곰이 위험해지고 있어. 기후변화는 미래의 일이 아니라 지금 일어나고 있는 일이야."},
+  {k:["궁금","모르","설명해","알려줘"], a:"무엇이든 물어봐 줘! '왜?'가 붙은 질문이 제일 좋아. 예를 들어 '왜 바다가 뜨거워지면 위험해?', '전기를 왜 아껴야 해?'처럼 물어보면 더 쉽게 알려줄게!"},
+  {k:["아이","어린이","우리도","할 수 있"], a:"어린이도 충분히 지구를 도울 수 있어! 학교에서 급식 남기지 않기, 양치 물 잠그기, 안 쓰는 전등 끄기, 장바구니 쓰기, 가족에게 알려주기. 작지만 확실한 실천이야. 💪"},
+  {k:["줄이는 법 요약","실천 정리","한번에"], a:"실천 총정리! 1) 전기 아끼기 2) 대중교통·자전거 3) 물 아끼기 4) 음식 남기지 않기 5) 일회용품 줄이기 6) 분리배출 잘하기 7) 나무 심기 8) 물건 오래 쓰기. 하나씩 해 봐!"}
+]);
+function AI답변(질문){
+  var q = String(질문||"").replace(/\s+/g,"");
+  var 최고점 = 0, 최고답 = null;
+  for(var i=0;i<AI지식.length;i++){
+    var 점 = 0;
+    for(var j=0;j<AI지식[i].k.length;j++){
+      if(q.indexOf(AI지식[i].k[j])>=0) 점++;
+    }
+    if(점 > 최고점){ 최고점 = 점; 최고답 = AI지식[i].a; }
+  }
+  if(최고답){
+    return 최고답.replace("{닉}", 닉네임얻기());
+  }
+  return "흠, 그 주제는 나도 아직 잘 몰라! '지구온난화', '분리배출', '플라스틱', '재생에너지', '물', '나무', '보석', '보스 문제' 같은 낱말을 넣어 다시 물어봐 줘. 내가 더 잘 알게 되면 꼭 알려줄게! 🌱";
+}
+function AI말추가(누구, 텍스트){
+  var m = document.getElementById("ai메시지");
+  var d = document.createElement("div");
+  d.className = "ai말 " + 누구;
+  d.textContent = 텍스트;
+  m.appendChild(d);
+  m.scrollTop = m.scrollHeight;
+  return d;
+}
+var AI빠른질문 = ["지구온난화가 뭐야?","분리배출 어떻게 해?","물 아끼는 법","나무는 왜 중요해?","동물을 지키려면?"];
+function AI칩만들기(){
+  var el = document.getElementById("ai칩들");
+  if(!el || el.children.length) return;
+  AI빠른질문.forEach(function(질){
+    var b = document.createElement("button");
+    b.className = "칩";
+    b.textContent = "💬 " + 질;
+    b.addEventListener("click", function(){ AI사용자말(질); });
+    el.appendChild(b);
+  });
+}
+function AI사용자말(텍스트){
+  if(!텍스트.trim()) return;
+  AI말추가("나", 텍스트);
+  var 로딩 = AI말추가("봇", "🤖 생각하는 중...");
+  setTimeout(function(){
+    if(로딩.parentNode) 로딩.parentNode.removeChild(로딩);
+    AI말추가("봇", AI답변(텍스트));
+    소리("보석");
+  }, 600);
+}
+function AI화면열기(){
+  AI칩만들기();
+  var m = document.getElementById("ai메시지");
+  if(m && !m.children.length){
+    AI말추가("봇", "안녕, " + 닉네임얻기() + "! 나는 지구를 지키는 AI 지구친구야 🌍\n궁금한 걸 편하게 물어봐~");
+    AI말추가("봇", "아래 물음표 질문을 눌러도 돼! 🔽");
+  }
+}
+document.getElementById("ai보내기").addEventListener("click", function(){
+  var inp = document.getElementById("ai입력");
+  AI사용자말(inp.value);
+  inp.value = "";
+});
+document.getElementById("ai입력").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    var inp = document.getElementById("ai입력");
+    AI사용자말(inp.value);
+    inp.value = "";
+  }
+});
+
+/* ---------- 시작 ---------- */
+불러오기();
+시작소유();
+닉네임UI();
+옷탭들그리기();
+옷탭열기("머리카락");
+그리기아바타(document.getElementById("아바타-로비"), false);
+갱신랭킹UI();
+모두보석반영();
+document.getElementById("화면-로비").classList.remove("켜짐");
+document.getElementById("화면-인트로").classList.add("켜짐");
+var 해시 = decodeURIComponent(location.hash || "");
+if(해시 === "#로비") 화면가기("화면-로비");
+else if(해시 === "#옷방") 화면가기("화면-옷방");
+else if(해시 === "#포스터") 화면가기("화면-포스터");
+
+})();
+</script>
+</body>
+</html>
