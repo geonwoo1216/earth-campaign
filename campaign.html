@@ -711,9 +711,16 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
     </div>
     <div id="코드결과" style="font-size:18px;color:#6b8f5f;margin:12px 4px 4px;min-height:26px"></div>
     <details style="margin-top:8px">
-      <summary style="cursor:pointer;font-size:16px;color:#3e7ca3">🔍 코드 힌트 보기</summary>
+      <summary style="cursor:pointer;font-size:16px;color:#3e7ca3">🔍 코드 힌트 (환경·지구 이야기)</summary>
       <div class="코드힌트" style="margin-top:8px">
-        탄소중립 · 지구온난화 · 온실가스 · 이산화탄소 · 블루카본 · CO2 · 산소 · O2 · 탄소발자국 · 환경보호 · 기후변화 · 플라스틱 · 비닐 · 재활용 · 분리배출
+        숨겨진 코드는 우리가 지구·환경을 배우며 만난 <b>낱말</b>들이에요!<br><br>
+        🌡️ 지구가 점점 뜨거워지는 현상<br>
+        💨 지구의 열을 붙잡는 기체들<br>
+        🌊 바다가 오래 숨겨 두는 탄소<br>
+        🌿 숨을 쉴 때 우리가 내보내는 기체<br>
+        🗑️ 쓰레기를 자원으로 바꾸는 행동<br><br>
+        하나씩 떠올려 입력해 보세요! (영어로 써도 돼요. CO2 처럼!)<br>
+        그리고… 지구를 구하는 특별한 외침도 준비되어 있어요. 🌍✨
       </div>
     </details>
   </div>
@@ -853,11 +860,28 @@ document.getElementById("코드확인버튼").addEventListener("click", function
   var q = 코드정규(inp.value);
   if(!q){ 말.textContent = "먼저 코드를 입력해 주세요!"; return; }
   상태.코드쓴 = 상태.코드쓴 || [];
+  /* 특별 코드: save the earth → 보석 10000 */
+  if(q === "savetheearth"){
+    if(상태.코드쓴.indexOf("★SAVE_THE_EARTH★") >= 0){
+      말.textContent = "⏳ 특별 코드는 이미 사용했어요!";
+      return;
+    }
+    상태.코드쓴.push("★SAVE_THE_EARTH★");
+    상태.보석 += 10000;
+    저장하기(); 모두보석반영(); 갱신랭킹UI();
+    inp.value = "";
+    말.textContent = "🌍✨ 특별 코드! Save the Earth! 보석 +10000! 지구 최고의 지킴이!";
+    소리("끝");
+    setTimeout(function(){ 소리("보석"); }, 150);
+    보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "🌍 특별 코드! 💎 +10000");
+    setTimeout(function(){ 보석반짝(window.innerWidth/2, window.innerHeight/2 - 40, "💚 Save the Earth!"); }, 300);
+    return;
+  }
   var hit = null;
   for(var i=0;i<보석코드목록.length;i++){
     if(코드정규(보석코드목록[i]) === q){ hit = 보석코드목록[i]; break; }
   }
-  if(!hit){ 말.textContent = "❌ 맞는 코드가 아니에요. 아래 힌트(코드 목록)를 확인해 보세요!"; return; }
+  if(!hit){ 말.textContent = "❌ 맞는 코드가 아니에요. 🔍 힌트(환경·지구 이야기)를 읽고 다시 입력해 보세요!"; return; }
   if(상태.코드쓴.indexOf(hit) >= 0){ 말.textContent = "⏳ 이미 사용한 코드예요! 코드는 한 번만 쓸 수 있어요."; return; }
   상태.코드쓴.push(hit);
   상태.보석 += 30;
