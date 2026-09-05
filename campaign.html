@@ -371,6 +371,7 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
     <div class="인트로버튼존">
       <button class="큰버튼" id="시작버튼">🎮 시작하기</button>
       <button class="작은글" id="소개버튼" style="border:none">우리 캠페인이 뭐예요?</button>
+      <button class="작은글" id="초기화버튼" style="border:none;color:#b06a6a">🧹 처음부터 새로 시작 (기록 비우기)</button>
     </div>
   </div>
   <div class="인트로꽃" id="인트로꽃">
@@ -1304,6 +1305,31 @@ document.getElementById("시작버튼").addEventListener("click", function(){ �
 document.getElementById("소개버튼").addEventListener("click", function(){ 소리("클릭"); document.getElementById("소개말").classList.add("보여"); });
 document.getElementById("소개닫기").addEventListener("click", function(){ document.getElementById("소개말").classList.remove("보여"); });
 document.getElementById("옷방버튼").addEventListener("click", function(){ 소리("클릭"); 화면가기("화면-옷방"); });
+
+/* 처음부터 새로 시작 (기록 비우기) — 친구에게 넘길 때 */
+var 초기화대기 = false, 초기화타이머 = null;
+document.getElementById("초기화버튼").addEventListener("click", function(){
+  var b = this;
+  if(!초기화대기){
+    초기화대기 = true;
+    b.textContent = "⚠️ 정말 지울까요? 한 번 더 누르세요";
+    초기화타이머 = setTimeout(function(){
+      초기화대기 = false;
+      b.textContent = "🧹 처음부터 새로 시작 (기록 비우기)";
+    }, 3000);
+    return;
+  }
+  clearTimeout(초기화타이머);
+  음악멈춤();
+  try{ localStorage.removeItem(저장키); }catch(e){}
+  상태 = {
+    보석:0, 소유:{}, 착용:Object.assign({},기본착용),
+    퀴즈최고:0, 분리최고:0, 본영상:[],
+    닉네임:"", 설정:{음악:true,효과음:true}, 코드쓴:[],
+    배경테마:"0", 배경소유:["0"], 전시:[]
+  };
+  location.reload();
+});
 
 /* =====================================================================
    아바타 그리기 (SVG)
