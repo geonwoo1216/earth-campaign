@@ -332,6 +332,12 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
 .피하기조종{width:74px;height:74px;border-radius:50%;background:rgba(255,255,255,.85);font-size:32px;box-shadow:0 4px 0 rgba(0,0,0,.14);pointer-events:auto}
 .피하기조종:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.14)}
 
+.기부카드{flex:none;text-align:center}
+.기부액줄{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px}
+.기부액{background:linear-gradient(180deg,#a5e888,#5cb85c);color:#fff;font-size:16px;padding:8px 12px;border-radius:30px;box-shadow:0 3px 0 #3f8f3f}
+.기부액:active{transform:translateY(3px);box-shadow:0 0 0 #3f8f3f}
+.기부정보{font-size:15px;color:#3f7a4f;text-align:center;line-height:1.6;min-height:40px}
+
 @media (max-width:900px){
   .옆판{width:250px}
   .보기들{grid-template-columns:1fr}
@@ -458,6 +464,19 @@ button{font-family:inherit;border:none;cursor:pointer;color:var(--본문)}
             <div class="칸"><div class="v" id="모은보석">0</div><div class="t">💎 모은 보석</div></div>
           </div>
           <div class="등급작은말">놀면서 기록이 쌓이면 등급이 올라가요!</div>
+        </div>
+        <div class="랭킹판 로비카드 기부카드">
+          <div class="랭킹제목">💚 지구에게 기부</div>
+          <p style="font-size:15px;color:#7b93ad;line-height:1.5;margin-bottom:8px">기부하면 나무가 심어져요! 금액을 골라 주세요.</p>
+          <div class="기부액줄">
+            <button class="기부액" data-기부="10">10💎</button>
+            <button class="기부액" data-기부="30">30💎</button>
+            <button class="기부액" data-기부="50">50💎</button>
+            <button class="기부액" data-기부="100">100💎</button>
+            <button class="기부액" data-기부="1000">1000💎</button>
+            <button class="기부액" data-기부="10000">10000💎</button>
+          </div>
+          <div class="기부정보" id="기부정보"></div>
         </div>
       </div>
     </div>
@@ -894,6 +913,7 @@ var 상태 = {
   설정:{음악:true,효과음:true},
   코드쓴:[],
   배경테마:"0", 배경소유:["0"],
+  기부수:0, 기부보석:0,
   전시:[]  // {src,cap} 캔버스로 만든 것만
 };
 function 불러오기(){
@@ -3368,6 +3388,37 @@ function 피하기버튼(btn, 방향){
 }
 피하기버튼(document.getElementById("피하기왼쪽"), "왼");
 피하기버튼(document.getElementById("피하기오른쪽"), "오른");
+
+/* =====================================================================
+   지구 기부 (10·30·50·100·1000·10000 보석)
+===================================================================== */
+function 기부UI(){
+  var el = document.getElementById("기부정보");
+  if(!el) return;
+  var 총 = 상태.기부보석 || 0;
+  var 그루 = Math.floor(총 / 30);
+  el.textContent = 총 ? ("총 기부 💎 " + 총 + " · 🌳 나무 " + 그루 + "그루") : "아직 기부하지 않았어요. 금액을 눌러 주세요!";
+}
+document.querySelectorAll("[data-기부]").forEach(function(b){
+  b.addEventListener("click", function(){
+    var 액 = Number(b.getAttribute("data-기부"));
+    if(상태.보석 >= 액){
+      상태.보석 -= 액;
+      상태.기부보석 = (상태.기부보석 || 0) + 액;
+      저장하기(); 모두보석반영(); 갱신랭킹UI(); 기부UI();
+      소리("끝");
+      var msg;
+      if(액 === 10000) msg = "🌟 10,000💎 기부! 지구의 큰 후원자!";
+      else if(액 >= 1000) msg = "🌳 1,000💎 기부! 숲이 자라나요!";
+      else msg = "💚 " + 액 + "💎 기부! 나무를 심었어요!";
+      보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, msg);
+    } else {
+      보석반짝(window.innerWidth/2, window.innerHeight/2 - 120, "보석이 부족해요. " + 액 + "💎이 필요해요!");
+      소리("오답");
+    }
+  });
+});
+기부UI();
 
 /* ---------- 시작 ---------- */
 불러오기();
